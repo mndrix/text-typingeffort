@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+%clicks;
+
+@clicks{'a' .. 'z'} = (1) x 26;
+@clicks{0 .. 9}     = (1) x 26;
+
+@clicks{'A' .. 'Z'} = (2) x 26;
+
+@clicks{qw( ' " { } = ; : < > / \ - + @ % . , $ _ ^ * # & ! [ ] | ~ ? \( \) )} = (1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2);
+
+@clicks{' '} = 1;
+
+
+$keys = 0;
+
+while(<>) {
+    chomp;
+    s/^\s*//;
+    s/\s*$//;
+
+    foreach(split //) {
+        if( exists $clicks{$_} ) {
+            $keys += $clicks{$_};
+        } else {
+            warn "Character '$_' was not found\n";
+            $clicks{$_} = 0;
+        }
+    }
+}
+
+print "$keys clicks\n";
+printf "%.3f Joules\n", $keys*.5*.003*.6;

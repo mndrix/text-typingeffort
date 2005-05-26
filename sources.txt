@@ -1,0 +1,3 @@
+compendium.pdf	http://purl.access.gpo.gov/GPO/LPS53360
+standards.pdf   http://www.tactuskeyboard.com/keymech.htm
+
