@@ -1,16 +1,18 @@
 #!/usr/bin/perl
 
-%clicks;
+my @chars = map(chr, 32 .. 126);
+my @clicks = map {
+    /[-'=;\/\\.,\[\] a-z0-9]/ ? 1 : 2;
+} @chars;
 
-@clicks{'a' .. 'z'} = (1) x 26;
-@clicks{0 .. 9}     = (1) x 26;
+my %clicks;
+@clicks{@chars} = @clicks;
 
-@clicks{'A' .. 'Z'} = (2) x 26;
-
-@clicks{qw( ' " { } = ; : < > / \ - + @ % . , $ _ ^ * # & ! [ ] | ~ ? \( \) )} = (1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2);
-
-@clicks{' '} = 1;
-
+=item
+use Data::Dumper;
+print Dumper(\%clicks);
+exit;
+=cut
 
 $keys = 0;
 
