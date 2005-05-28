@@ -1,12 +1,84 @@
 #!/usr/bin/perl
 
-my @chars = map(chr, 32 .. 126);
-my @clicks = map {
-    /[-'=;\/\\.,\[\] a-z0-9]/ ? 1 : 2;
-} @chars;
+# define how far fingers must move to type each character
+# on the QWERTY keyboard
+my @lengths = (
+    # distances to left and right shift and space(respectively)
+    qw{
+        15 30 0
+    },
+    # define the 12345 row
+    qw{
+        ` ~ r 45
+        1 ! r 35
+        2 @ r 35
+        3 # r 35
+        4 $ r 35
+        5 % r 30
+        6 ^ r 40
+        7 & l 35
+        8 * l 35
+        9 ( l 35
+        0 ) l 30
+        - _ l 30
+        = + l 35
+        \ | l 45
+    },
+    # define the QWERTY row
+    qw/
+        q  Q r 15
+        w  W r 15
+        e  E r 15
+        r  R r 15
+        t  T r 15
+        y  Y l 25
+        u  U l 15
+        i  I l 15
+        o  O l 15
+        p  P l 15
+        [  { l 15
+        ]  } l 30
+    /,
+    # define the home row
+    qw{
+        a A r  0
+        s S r  0
+        d D r  0
+        f F r  0
+        g G r 15
+        h H l 15
+        j J l  0
+        k K l  0
+        l L l  0
+        ; : l  0
+        ' " l 15
+    },
+    # define the ZXCVB row
+    qw{
+        z Z r 15
+        x X r 15
+        c C r 15
+        v V r 15
+        b B r 30
+        n N l 15
+        m M l 15
+        , < l 15
+        . > l 15
+        / ? l 15
+    },
+);
 
-my %clicks;
-@clicks{@chars} = @clicks;
+my %clicks; # map character to the number of keypresses needed
+my %mm;  # map character to the distance (millimeters) the fingers must move
+my ($lshift, $rshift); # distances to the shift keys
+($lshift, $rshift, $mm{' '}) = splice(@lengths, 0, 3);
+$clicks{' '} = 1;
+while( my($lc, $uc, $shift, $d) = splice(@lengths, 0, 4) ) {
+    $clicks{$lc} = 1;
+    $clicks{$uc} = 2;
+    $mm{$lc} = $d;
+    $mm{$uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
+}
 
 =item
 use Data::Dumper;
@@ -15,6 +87,7 @@ exit;
 =cut
 
 $keys = 0;
+$dist = 0;
 
 while(<>) {
     chomp;
@@ -25,11 +98,21 @@ while(<>) {
         if( exists $clicks{$_} ) {
             $keys += $clicks{$_};
         } else {
-            warn "Character '$_' was not found\n";
+            warn "Clicks for '$_' was not found\n";
             $clicks{$_} = 0;
+        }
+
+        if( exists $mm{$_} ) {
+            $dist += $mm{$_};
+        } else {
+            warn "Distance for '$_' was not found\n";
+            $mm{$_} = 0;
         }
     }
 }
 
 print "$keys clicks\n";
-printf "%.3f Joules\n", $keys*.5*.003*.6;
+print "$dist mm\n";
+print "\n";
+printf "%.1f mm/click\n", $dist/$keys;
+printf "%.3f Joules for key depression\n", $keys*.5*.003*.6;
