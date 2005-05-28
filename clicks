@@ -68,17 +68,93 @@ my @lengths = (
     },
 );
 
+my @dvorak = (
+    # define the 12345 row
+    qw/
+        `  ~
+        1  !
+        2  @
+        3  #
+        4  $
+        5  %
+        6  ^
+        7  &
+        8  *
+        9  (
+        0  )
+        [  {
+        ]  }
+        \\ |
+    /,
+    # define the ',.pYF row
+    qw{
+        ' "
+        , <
+        . >
+        p P
+        y Y
+        f F
+        g G
+        c C
+        r R
+        l L
+        / ?
+        = +
+    },
+    # define the home row
+    qw{
+        a A
+        o O
+        e E
+        u U
+        i I
+        d D
+        h H
+        t T
+        n N
+        s S
+        - _
+    },
+    # define the ;QJKX row
+    qw{
+        ; :
+        q Q
+        j J
+        k K
+        x X
+        b B
+        m M
+        w W
+        v V
+        z Z
+    },
+);
+
 my %clicks; # map character to the number of keypresses needed
 my %mm;  # map character to the distance (millimeters) the fingers must move
+
+# same but for Dvorak keyboard
+my %dv_clicks;
+my %dv_mm;
+
 my ($lshift, $rshift); # distances to the shift keys
 ($lshift, $rshift, $mm{' '}) = splice(@lengths, 0, 3);
+$dv_mm{' '} = $mm{' '};
 $clicks{' '} = 1;
+$dv_clicks{' '} = 1;
 while( my($lc, $uc, $shift, $d) = splice(@lengths, 0, 4) ) {
+    my($dv_lc, $dv_uc) = splice(@dvorak, 0, 2);
     $clicks{$lc} = 1;
     $clicks{$uc} = 2;
+    $dv_clicks{$dv_lc} = 1;
+    $dv_clicks{$dv_uc} = 2;
+
     $mm{$lc} = $d;
     $mm{$uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
+    $dv_mm{$dv_lc} = $d;
+    $dv_mm{$dv_uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
 }
+
 
 =item
 use Data::Dumper;
@@ -88,6 +164,8 @@ exit;
 
 $keys = 0;
 $dist = 0;
+$dv_keys = 0;
+$dv_dist = 0;
 
 while(<>) {
     chomp;
@@ -95,6 +173,7 @@ while(<>) {
     s/\s*$//;
 
     foreach(split //) {
+        # QWERTY
         if( exists $clicks{$_} ) {
             $keys += $clicks{$_};
         } else {
@@ -108,11 +187,37 @@ while(<>) {
             warn "Distance for '$_' was not found\n";
             $mm{$_} = 0;
         }
+
+        # Dvorak
+        if( exists $dv_clicks{$_} ) {
+            $dv_keys += $dv_clicks{$_};
+        } else {
+            warn "Dvorak clicks for '$_' was not found\n";
+            $dv_clicks{$_} = 0;
+        }
+
+        if( exists $dv_mm{$_} ) {
+            $dv_dist += $dv_mm{$_};
+        } else {
+            warn "Dvorak distance for '$_' was not found\n";
+            $dv_mm{$_} = 0;
+        }
     }
 }
 
+# QWERTY
+print "QWERTY:\n";
 print "$keys clicks\n";
 print "$dist mm\n";
 print "\n";
 printf "%.1f mm/click\n", $dist/$keys;
 printf "%.3f Joules for key depression\n", $keys*.5*.003*.6;
+
+# Dvorak
+print "\n\nDvorak:\n";
+print "$dv_keys clicks\n";
+print "$dv_dist mm\n";
+print "\n";
+printf "%.1f mm/click\n", $dv_dist/$dv_keys;
+printf "%.3f Joules for key depression\n", $dv_keys*.5*.003*.6;
+
