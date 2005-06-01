@@ -1,156 +1,31 @@
 #!/usr/bin/perl
 
-# define how far fingers must move to type each character
-# on the QWERTY keyboard
-my @lengths = (
-    # distances to left and right shift and space(respectively)
-    qw{
-        15 30 0
-    },
-    # define the 12345 row
-    qw{
-        ` ~ r 45
-        1 ! r 35
-        2 @ r 35
-        3 # r 35
-        4 $ r 35
-        5 % r 30
-        6 ^ r 40
-        7 & l 35
-        8 * l 35
-        9 ( l 35
-        0 ) l 30
-        - _ l 30
-        = + l 35
-        \ | l 45
-    },
-    # define the QWERTY row
-    qw/
-        q  Q r 15
-        w  W r 15
-        e  E r 15
-        r  R r 15
-        t  T r 15
-        y  Y l 25
-        u  U l 15
-        i  I l 15
-        o  O l 15
-        p  P l 15
-        [  { l 15
-        ]  } l 30
-    /,
-    # define the home row
-    qw{
-        a A r  0
-        s S r  0
-        d D r  0
-        f F r  0
-        g G r 15
-        h H l 15
-        j J l  0
-        k K l  0
-        l L l  0
-        ; : l  0
-        ' " l 15
-    },
-    # define the ZXCVB row
-    qw{
-        z Z r 15
-        x X r 15
-        c C r 15
-        v V r 15
-        b B r 30
-        n N l 15
-        m M l 15
-        , < l 15
-        . > l 15
-        / ? l 15
-    },
-);
+my @us_104 = &us_104;
+my @qwerty = &qwerty;
+my @dvorak = &dvorak;
 
-my @dvorak = (
-    # define the 12345 row
-    qw/
-        `  ~
-        1  !
-        2  @
-        3  #
-        4  $
-        5  %
-        6  ^
-        7  &
-        8  *
-        9  (
-        0  )
-        [  {
-        ]  }
-        \\ |
-    /,
-    # define the ',.pYF row
-    qw{
-        ' "
-        , <
-        . >
-        p P
-        y Y
-        f F
-        g G
-        c C
-        r R
-        l L
-        / ?
-        = +
-    },
-    # define the home row
-    qw{
-        a A
-        o O
-        e E
-        u U
-        i I
-        d D
-        h H
-        t T
-        n N
-        s S
-        - _
-    },
-    # define the ;QJKX row
-    qw{
-        ; :
-        q Q
-        j J
-        k K
-        x X
-        b B
-        m M
-        w W
-        v V
-        z Z
-    },
-);
-
-my %clicks; # map character to the number of keypresses needed
-my %mm;  # map character to the distance (millimeters) the fingers must move
+my %qw_clicks; # map character to the number of keypresses needed
+my %qw_mm;  # map character to the distance (millimeters) the fingers must move
 
 # same but for Dvorak keyboard
 my %dv_clicks;
 my %dv_mm;
 
 my ($lshift, $rshift); # distances to the shift keys
-($lshift, $rshift, $mm{' '}) = splice(@lengths, 0, 3);
-$dv_mm{' '} = $mm{' '};
-$clicks{' '} = 1;
+($lshift, $rshift, $qw_mm{' '}) = splice(@us_104, 0, 3);
+$dv_mm{' '} = $qw_mm{' '};
+$qw_clicks{' '} = 1;
 $dv_clicks{' '} = 1;
-while( my($lc, $uc, $shift, $d) = splice(@lengths, 0, 4) ) {
+while( my($shift, $d) = splice(@us_104, 0, 2) ) {
+    my($qw_lc, $qw_uc) = splice(@qwerty, 0, 2);
     my($dv_lc, $dv_uc) = splice(@dvorak, 0, 2);
-    $clicks{$lc} = 1;
-    $clicks{$uc} = 2;
+    $qw_clicks{$qw_lc} = 1;
+    $qw_clicks{$qw_uc} = 2;
     $dv_clicks{$dv_lc} = 1;
     $dv_clicks{$dv_uc} = 2;
 
-    $mm{$lc} = $d;
-    $mm{$uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
+    $qw_mm{$qw_lc} = $d;
+    $qw_mm{$qw_uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
     $dv_mm{$dv_lc} = $d;
     $dv_mm{$dv_uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
 }
@@ -162,8 +37,8 @@ print Dumper(\%clicks);
 exit;
 =cut
 
-$keys = 0;
-$dist = 0;
+$qw_keys = 0;
+$qw_dist = 0;
 $dv_keys = 0;
 $dv_dist = 0;
 
@@ -174,18 +49,18 @@ while(<>) {
 
     foreach(split //) {
         # QWERTY
-        if( exists $clicks{$_} ) {
-            $keys += $clicks{$_};
+        if( exists $qw_clicks{$_} ) {
+            $qw_keys += $qw_clicks{$_};
         } else {
             warn "Clicks for '$_' was not found\n";
-            $clicks{$_} = 0;
+            $qw_clicks{$_} = 0;
         }
 
-        if( exists $mm{$_} ) {
-            $dist += $mm{$_};
+        if( exists $qw_mm{$_} ) {
+            $qw_dist += $qw_mm{$_};
         } else {
             warn "Distance for '$_' was not found\n";
-            $mm{$_} = 0;
+            $qw_mm{$_} = 0;
         }
 
         # Dvorak
@@ -207,11 +82,11 @@ while(<>) {
 
 # QWERTY
 print "QWERTY:\n";
-print "$keys clicks\n";
-print "$dist mm\n";
+print "$qw_keys clicks\n";
+print "$qw_dist mm\n";
 print "\n";
-printf "%.1f mm/click\n", $dist/$keys;
-printf "%.3f Joules for key depression\n", $keys*.5*.003*.6;
+printf "%.1f mm/click\n", $qw_dist/$qw_keys;
+printf "%.3f Joules for key depression\n", $qw_keys*.5*.003*.6;
 
 # Dvorak
 print "\n\nDvorak:\n";
@@ -221,3 +96,200 @@ print "\n";
 printf "%.1f mm/click\n", $dv_dist/$dv_keys;
 printf "%.3f Joules for key depression\n", $dv_keys*.5*.003*.6;
 
+
+sub us_104 {
+    return (
+        # distances to left and right shift and space(respectively)
+        qw{
+            15 30 0
+        },
+        # define the 12345 row
+        qw{
+            r 45
+            r 35
+            r 35
+            r 35
+            r 35
+            r 30
+            r 40
+            l 35
+            l 35
+            l 35
+            l 30
+            l 30
+            l 35
+            l 45
+        },
+        # define the QWERTY row
+        qw/
+            r 15
+            r 15
+            r 15
+            r 15
+            r 15
+            l 25
+            l 15
+            l 15
+            l 15
+            l 15
+            l 15
+            l 30
+        /,
+        # define the home row
+        qw{
+            r  0
+            r  0
+            r  0
+            r  0
+            r 15
+            l 15
+            l  0
+            l  0
+            l  0
+            l  0
+            l 15
+        },
+        # define the ZXCVB row
+        qw{
+            r 15
+            r 15
+            r 15
+            r 15
+            r 30
+            l 15
+            l 15
+            l 15
+            l 15
+            l 15
+        },
+    );
+
+}
+
+sub qwerty {
+    return (
+        # define the 12345 row
+        qw{
+            ` ~
+            1 !
+            2 @
+            3 #
+            4 $
+            5 %
+            6 ^
+            7 &
+            8 *
+            9 (
+            0 )
+            - _
+            = +
+            \ |
+        },
+        # define the QWERTY row
+        qw/
+            q  Q
+            w  W
+            e  E
+            r  R
+            t  T
+            y  Y
+            u  U
+            i  I
+            o  O
+            p  P
+            [  {
+            ]  }
+        /,
+        # define the home row
+        qw{
+            a A
+            s S
+            d D
+            f F
+            g G
+            h H
+            j J
+            k K
+            l L
+            ; :
+            ' "
+        },
+        # define the ZXCVB row
+        qw{
+            z Z
+            x X
+            c C
+            v V
+            b B
+            n N
+            m M
+            , <
+            . >
+            / ?
+        },
+    );
+}
+
+sub dvorak {
+    return (
+        # define the 12345 row
+        qw/
+            `  ~
+            1  !
+            2  @
+            3  #
+            4  $
+            5  %
+            6  ^
+            7  &
+            8  *
+            9  (
+            0  )
+            [  {
+            ]  }
+            \\ |
+        /,
+        # define the ',.pYF row
+        qw{
+            ' "
+            , <
+            . >
+            p P
+            y Y
+            f F
+            g G
+            c C
+            r R
+            l L
+            / ?
+            = +
+        },
+        # define the home row
+        qw{
+            a A
+            o O
+            e E
+            u U
+            i I
+            d D
+            h H
+            t T
+            n N
+            s S
+            - _
+        },
+        # define the ;QJKX row
+        qw{
+            ; :
+            q Q
+            j J
+            k K
+            x X
+            b B
+            m M
+            w W
+            v V
+            z Z
+        },
+    );
+}
