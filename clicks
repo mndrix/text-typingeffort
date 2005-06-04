@@ -66,6 +66,21 @@ while(<>) {
     }
 }
 
+# English and QWERTY are used in the values below because the caloric
+# studies were done with a standard QWERTY keyboard and typing English text
+my $J_per_mm = 502      # Joules/ hour (energy for 150lb man typing for 1 hour)
+             * (1/60)   # hours / min
+             * (1/40)   # min   / word (typing speed)
+             * (1/4.3)  # words / char (average English word length)
+             * (1/10.6);# chars / mm   (average distance when typing QWERTY)
+
+# The energy used to depress a key is the area of a triangle with sides
+# equal to the key displacement in meters (.003) and the force required to
+# depress the key in Newtons (.6)  These values are taken from
+# ISO 9241-4:1998(E)  (indirectly since the actual source was a quote at
+# http://www.tactuskeyboard.com/keymech.htm
+my $J_per_click = (1/2)*(.003)*(.6);
+
 # QWERTY
 print "$desired:\n";
 print "$chars characters\n";
@@ -75,7 +90,9 @@ print "\n";
 printf "%.1f mm/click\n", $dist/$keys;
 printf "%.1f mm/char\n", $dist/$chars;
 printf "%.2f clicks/char\n", $keys/$chars;
-printf "%.3f Joules for key depression\n", $keys*.5*.003*.6;
+printf "%.3f Joules for key depression\n", $keys*$J_per_click;
+printf "%.3f Joules for movement\n", $J_per_mm * $dist;
+printf "%.3f Joules total\n", ($keys*.5*.003*.6) + ($J_per_mm * $dist);
 
 sub us_104 {
     return (
