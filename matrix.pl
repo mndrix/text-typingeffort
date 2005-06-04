@@ -4,9 +4,11 @@ use List::Util qw(sum);
 use strict;
 
 print "5x5 matrix in one line: " unless @ARGV;
-my $matrix = shift || <>;
+my $matrix = $ARGV[0] || <>;
 chomp $matrix;
 $matrix ||= "abcdefghijklmnopqrstuvwxy";
+
+length($matrix) == 25 or die "Matrix length MUST be 25 characters.\n";
 my @matrix = [ ('_') x 7 ];
 push @matrix, [ '_', (split //, substr $matrix, 0, 5, ''), '_' ] while $matrix;
 push @matrix, [ ('_') x 7 ];
@@ -27,7 +29,7 @@ for my $y (1..5) {
 
 sub build_re {
     my ($y, $x, $todo, $had) = @_;
-    my $r = $matrix[$y][$x] or die "y=$y,x=$x is empty (@_)";
+    my $r = $matrix[$y][$x] or die "y=$y,x=$x is empty";
     --$todo or return $r;
     my %had = $had ? %$had : ("$y/$x" => 1);  # copy
     
@@ -63,7 +65,7 @@ my %scores = (
 $_ *= 10 for values %scores;
 
 my @matches;
-open my $fh, '/usr/share/dict/american-english' or die $!;
+open my $fh, '/usr/share/dict/words' or die $!;
 
 substr(join('', @{ $matrix[1] }), 1, 5) =~ /$re/ or die;  # Precompile
 while (<$fh>) {

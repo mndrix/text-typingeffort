@@ -7,10 +7,12 @@ chomp $matrix;
 $matrix ||= "abcdefghijklmnopqrstuvwxy";
 
 $matrix.chars == 25 or die "Matrix length MUST be 25 characters.\n";
-my @matrix  = [ '_' xx 7 ];
+my @matrix = [ '_' xx 7 ];
 push @matrix, [ '_', (split "", substr $matrix, 0, 5, ''), '_' ] while $matrix;
 push @matrix, [ '_' xx 7 ];
+
 my @adj;
+
 for 1..5 -> $y {
     for 1..5 -> $x {
         for -1..1 -> $dx {
@@ -23,44 +25,32 @@ for 1..5 -> $y {
     }
 }
 
-
 sub build_re ($y, $x, $todo is copy, ?%had is copy) {
-    %had{"$y/$x"} = 1;
     my $r = @matrix[$y][$x] or die "y=$y,x=$x is empty";
     --$todo or return $r;
+    %had{"$y/$x"} = 1;
     
-    my @next; #= gather {
-        for @adj[$y][$x] -> $adj {
-            %had{"$adj<y>/$adj<x>"}++ and next;
-            #take build_re $adj<y>, $adj<x>, $todo, %had;
-            push @next, build_re $adj<y>, $adj<x>, $todo, %had;
-        }
-    #} or return $r;
+    my @next;
+    for @adj[$y][$x] -> $adj {
+        %had{"$adj<y>/$adj<x>"}++ and next;
+        push @next, build_re $adj<y>, $adj<x>, $todo, %had;
+    }
     @next or return $r;
 
-    return $todo == 1 
+    return $todo == 1
         ?? "$r\<[{ @next.join('') }]>?"
         :: "$r\[{ @next.join('|') }]{ $todo < 4 ?? '?' :: '' }";
 }
+
 my @re;
-#say build_re 1, 1, 5;
-#say "done";
-#exit;
 
-#my $re = #rule { 
-#    ^ [ <$(
-            for 1..5 -> $y {
-                for 1..5 -> $x {
-       push @re, build_re $y, $x, 6;
-                }
-            }
-#        }
-#    )> ] $ 
-#};
+for 1..5 -> $y {
+    for 1..5 -> $x {
+        push @re, build_re $y, $x, 6;
+    }
+}
 
-$re = join('|', @re);
-
-=foo
+my $re = join('|', @re);
 
 my %scores = (
   a => 1, b => 3, c => 3, d => 2, e => 1, f => 4, g => 2, h => 4, i => 1, 
