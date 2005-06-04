@@ -14,6 +14,7 @@ if( $desired eq 'dvorak' ) {
 
 my %clicks; # map character to the number of keypresses needed
 my %mm;     # map character to the distance (millimeters) the fingers must move
+my $chars;  # the number of characters typed
 
 # get some keyboard characteristics
 my ($lshift, $rshift) = splice(@keyboard, 0, 2);
@@ -47,6 +48,8 @@ while(<>) {
     s/\s*$//;
 
     foreach(split //) {
+        $chars++;
+
         if( exists $clicks{$_} ) {
             $keys += $clicks{$_};
         } else {
@@ -65,10 +68,13 @@ while(<>) {
 
 # QWERTY
 print "$desired:\n";
+print "$chars characters\n";
 print "$keys clicks\n";
 print "$dist mm\n";
 print "\n";
 printf "%.1f mm/click\n", $dist/$keys;
+printf "%.1f mm/char\n", $dist/$chars;
+printf "%.2f clicks/char\n", $keys/$chars;
 printf "%.3f Joules for key depression\n", $keys*.5*.003*.6;
 
 sub us_104 {
