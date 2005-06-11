@@ -1,4 +1,4 @@
-package Effort;
+package Text::Effort;
 
 use strict;
 use warnings;

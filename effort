@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Effort qw(effort);
+use Text::Effort qw(effort);
 
 my $layout = shift;  # get the keyboard layout
 my $file   = shift;  # get the filename that should be processed
