@@ -48,6 +48,7 @@ sub effort {
 
     close( FILE );
 
+    $sum{distance} = 2*$sum{distance};  # initially, distance is only one-way
     $sum{joules} = (&J_per_mm*$sum{distance}) + (&J_per_click*$sum{presses});
 
     return \%sum;
@@ -103,7 +104,7 @@ sub J_per_mm {
           * (1/60)   # hours / min
           * (1/40)   # min   / word (typing speed)
           * (1/4.3)  # words / char (average English word length)
-          * (1/10.6);# chars / mm   (average distance when typing QWERTY)
+          * (1/21.2);# chars / mm   (average distance when typing QWERTY)
 }
 
 # Calculate the number of Joules of energy needed to depress a single
