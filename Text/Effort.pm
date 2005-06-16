@@ -1,14 +1,57 @@
 package Text::Effort;
 
+use 5.006;
 use strict;
 use warnings;
 
-use base qw(Exporter);
+require Exporter;
 
+our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( effort );
-our $VERSION = 0.01;
+our $VERSION = '0.01';
 
-our( %basis );
+our %basis;  # stores the basis for our calculations
+
+=head1 NAME
+
+Text::Effort - calculate the effort required to type a given text
+
+=head1 SYNOPSIS
+
+  use Text::Effort 'effort';
+  
+  my $effort = effort("The quick brown fox jumps over the lazy dog");
+
+C<$effort> is a hashref something like this
+
+  $effort = {
+      characters => 43,     # the number of characters in the text
+      presses    => 44,     # keys presses need to type the text
+      distance   => 950,    # millimeters the fingers moved while typing
+      joules     => 2.2..., # the eneregy (Joules) used while typing
+  };
+
+=head1 DESCRIPTION
+
+The module has one subroutine which calculates how much effort was
+required to type a given text.  Several metrics of effort are calculated.
+These metrics are described in detail in the L<METRICS> section.
+
+This module can be useful for determining which of two keyboard layouts is
+more efficient, for making API/language design decisions, or just for fun!
+
+=head1 FUNCTIONS
+
+=head2 effort $TEXT
+
+Leading whitespace on each line is ignored since a decent text editor takes
+care of that.  Only characters found on a standard US-104 keyboard are tallied
+in the metrics.  That means that accented characters, unicode, etc. are not
+included.
+
+=head2 effort %OPTIONS
+
+=cut
 
 sub effort {
     my %opts = (
@@ -53,6 +96,90 @@ sub effort {
 
     return \%sum;
 }
+
+=head1 METRICS
+
+=head2 characters
+
+The number of recognized characters in the text.  This is similar in
+spirit to the Unix command C<wc -c> but will provides a result not
+greater than the Unix command.  Only those characters which are encoded
+in the internal keyboard layout will be counted.  That means that accented
+characters, Unicode characters, control characters, etc. are not included
+in this metric.
+
+=head2 presses
+
+The number of keys pressed when typing the text.  The value of this metric is
+the value of the B<characters> metric plus the number of times the Shift key
+was pressed.
+
+=head2 distance
+
+The distance, in millimeters, that the fingers travelled while typing
+the text.  This distance includes movement required for the Shift key,
+but does not include the vertical movement the finger makes as the key
+descends during a press.  Perhaps a better name for this metric would
+be horizontal_distance, but that's too long ;-)
+
+The model for determining this metric is very simplistic.  It assumes
+that a finger moves from its home position to the destination key and
+then returns to the home position before moving on to the next key.
+Of course, this is not how people actually type, but the model should
+result in an upper-bound for the amount of finger movement.
+
+=head2 joules
+
+The number of Joules of energy required to type the text.  This metric is
+the most inclusive in that it tries to accomodate the values of both the
+B<presses> and the B<distance> metrics into a single metric.  However,
+this metric is also the least accurate at modeling the real world.
+The calculations are roughly based upon the I<The Compendium of Physical
+Activities> (or rather hearsay about it's contents since I don't have
+a copy).
+
+The physical charactersistics of the keyboard are assumed to be roughly in
+line with ISO 9241-4:1998, which specifies standards for such things.
+
+=head1 SEE ALSO
+
+Tactus Keyboard article on the mechanics and standards of
+keyboard design - http://www.tactuskeyboard.com/keymech.htm
+
+=head1 AUTHOR
+
+Michael Hendricks, E<lt>michael@palmcluster.orgE<gt>
+
+=head1 TODO
+
+=over 2
+
+=item *
+
+Allow keyboard layouts other than QWERTY and Dvorak
+
+=item *
+
+Allow keyboarrds other than US-104
+
+=item *
+
+Add options for specifying the characteristics of the keyboard such as
+key displacement and the force required to depress the keys.
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2005 by Michael Hendricks
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.4 or,
+at your option, any later version of Perl 5 you may have available.
+
+=cut
+
+
 
 ############### subroutines to help with the calculations ################
 
@@ -338,4 +465,6 @@ sub dvorak {
     );
 }
 
+
 1;
+__END__
