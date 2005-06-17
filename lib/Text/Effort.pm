@@ -3,6 +3,7 @@ package Text::Effort;
 use 5.006;
 use strict;
 use warnings;
+use Carp;
 
 require Exporter;
 
@@ -18,7 +19,7 @@ Text::Effort - calculate the effort required to type a given text
 
 =head1 SYNOPSIS
 
-  use Text::Effort qw(effort);
+  use Text::Effort qw/effort/;
   
   my $effort = effort("The quick brown fox jumps over the lazy dog");
 
@@ -92,23 +93,38 @@ it like this
 =cut
 
 sub effort {
-    my %opts = (
-        # establish the defaults
+    # establish the default options
+    my @DEFAULTS = (
         layout => 'qwerty',
-
-        # override the defaults with user options
-        @_,
     );
 
-    return unless defined $opts{file};
+    # establish our current options
+    my %opts;
+    if( @_ == 1 ) {
+        %opts = ( @DEFAULTS, text=>$_[0] );
+    } else {
+        %opts = ( @DEFAULTS, @_ );
+    }
+    
+    return unless defined $opts{file} or defined $opts{text};
 
     # fill in the preliminary data structures as needed
     %basis = &_basis( $opts{layout} ) unless %basis;
 
-    open(FILE, "<$opts{file}") or die "Couldn't open $opts{file}";
+    my $fh;
+    my $file = $opts{file};
+    my $close_fh = 0;
+    if( defined $file ) {
+        if( ref $file ) {
+            $fh = $file;
+        } else {
+            open($fh, "<$file") or croak "Couldn't open file $fh";
+            $close_fh = 1;
+        }
+    }
 
     my %sum;
-    while(<FILE>) {
+    while(<$fh>) {
         chomp;
         s/^\s*//;
         s/\s*$//;
@@ -127,10 +143,10 @@ sub effort {
         }
     }
 
-    close( FILE );
+    close $fh if $close_fh;
 
     $sum{distance} = 2*$sum{distance};  # initially, distance is only one-way
-    $sum{joules} = (&J_per_mm*$sum{distance}) + (&J_per_click*$sum{presses});
+    $sum{energy} = (&J_per_mm*$sum{distance}) + (&J_per_click*$sum{presses});
 
     return \%sum;
 }
@@ -191,6 +207,11 @@ Michael Hendricks, E<lt>michael@palmcluster.orgE<gt>
 =head1 TODO
 
 =over 2
+
+=item *
+
+Add an 'accumulator' option which allows effort() to add it's results
+to those from a previous call to effort().
 
 =item *
 
