@@ -18,7 +18,7 @@ Text::Effort - calculate the effort required to type a given text
 
 =head1 SYNOPSIS
 
-  use Text::Effort 'effort';
+  use Text::Effort qw(effort);
   
   my $effort = effort("The quick brown fox jumps over the lazy dog");
 
@@ -33,9 +33,8 @@ C<$effort> will be a hashref something like this
 
 =head1 DESCRIPTION
 
-Text::Effort is used to calculate how much physical, human effort was
-required to type a given text (spiritual effort was just to hard to
-implement.  Maybe for Perl 6).  Several metrics of effort are calculated.
+Text::Effort is used to calculate how much physical effort was
+required to type a given text.  Several metrics of effort are used.
 These metrics are described in detail in the L</METRICS> section.
 
 This module is useful for determining which keyboard layout is
