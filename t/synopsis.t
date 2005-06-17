@@ -1,3 +1,6 @@
+# This test makes sure that the code from the SYNOPSIS works as
+# advertised.
+
 use Test::More;
 plan tests => 4;
 
