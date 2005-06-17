@@ -4,7 +4,7 @@
 use Test::More;
 plan tests => 4;
 
-use Text::Effort qw(effort);
+use Text::Effort qw/effort/;
 ok(1, 'use Text::Effort');
 
 my $effort = effort("The quick brown fox jumps over the lazy dog");
