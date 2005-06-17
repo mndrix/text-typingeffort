@@ -111,23 +111,30 @@ sub effort {
     # fill in the preliminary data structures as needed
     %basis = &_basis( $opts{layout} ) unless %basis;
 
-    my $fh;
-    my $file = $opts{file};
+    my $fh;   # the filehandle for reading the text
+    my $text; # or a reference to the text itself
     my $close_fh = 0;
-    if( defined $file ) {
-        if( ref $file ) {
-            $fh = $file;
+    if( defined $opts{file} ) {
+        if( ref $opts{file} ) {
+            $fh = $opts{file};
         } else {
-            open($fh, "<$file") or croak "Couldn't open file $fh";
+            open($fh, "<$opts{file}")
+                or croak "Couldn't open file $opts{file}";
             $close_fh = 1;
         }
+    } elsif( ref $opts{text} ) {
+        $text = $opts{text};
+    } else {
+        $text = \$opts{text};  # make $text a reference
     }
 
     # get the first line of text
     my $line;
+    my $line_rx = ".*?(?:\n|\r|\r\n)";  # match a line
     if( $fh ) {
         $line = <$fh>;
     } else {
+        $line = $1 if $$text =~ /($line_rx)/g;
     }
 
     my %sum;
@@ -158,6 +165,11 @@ sub effort {
         if( $fh ) {
             $line = <$fh>;
         } else {
+            if( $$text =~ /($line_rx)/gc ) {
+                $line = $1;
+            } else {
+                undef $line;
+            }
         }
     }
 
