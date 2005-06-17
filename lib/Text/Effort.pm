@@ -22,34 +22,73 @@ Text::Effort - calculate the effort required to type a given text
   
   my $effort = effort("The quick brown fox jumps over the lazy dog");
 
-C<$effort> is a hashref something like this
+C<$effort> will be a hashref something like this
 
   $effort = {
       characters => 43,     # the number of characters in the text
-      presses    => 44,     # keys presses need to type the text
+      presses    => 44,     # key presses need to type the text
       distance   => 950,    # millimeters the fingers moved while typing
-      joules     => 2.2..., # the eneregy (Joules) used while typing
+      energy     => 2.2..., # the energy (Joules) used while typing
   };
 
 =head1 DESCRIPTION
 
-The module has one subroutine which calculates how much effort was
-required to type a given text.  Several metrics of effort are calculated.
-These metrics are described in detail in the L<METRICS> section.
+Text::Effort is used to calculate how much physical, human effort was
+required to type a given text (spiritual effort was just to hard to
+implement.  Maybe for Perl 6).  Several metrics of effort are calculated.
+These metrics are described in detail in the L</METRICS> section.
 
-This module can be useful for determining which of two keyboard layouts is
-more efficient, for making API/language design decisions, or just for fun!
+This module is useful for determining which keyboard layout is
+more efficient, for making API/language design decisions, or to show your
+boss how hard you're working.
 
 =head1 FUNCTIONS
 
-=head2 effort $TEXT
+=head2 effort $TEXT | \$TEXT
 
-Leading whitespace on each line is ignored since a decent text editor takes
-care of that.  Only characters found on a standard US-104 keyboard are tallied
-in the metrics.  That means that accented characters, unicode, etc. are not
-included.
+The parameter should be a scalar or a reference to a scalar which contains
+the text to be analyzed.  Leading whitespace on each line of C<$TEXT>
+is ignored since a decent text editor handles that for the typist.
+Only characters found on a standard US-104 keyboard are tallied in the
+metrics.  That means that accented characters, unicode, etc. are not
+included.  If a character is unrecognized, it will be silently ignored.
 
-=head2 effort %OPTIONS
+=head2 effort %PARAMETERS
+
+effort() may also be called with a list of named parameters.  This allows
+more flexibility in how the metrics are calculated.  Below is a list of
+acceptable (or required) parameters.
+
+=over 4
+
+=item B<text>
+
+=item B<file>
+
+One of these two options must be specified.  If neither is specified,
+effort() will C<die>.  The value of B<text>
+should be a scalar or reference to a scalar containing the text to
+analyze.  The value of B<file> should be a filehandle which
+is open for reading or a file name.
+
+=item B<layout>
+
+Default: qwerty
+
+This parameter specifies the keyboard layout to use when calculating
+metrics.  The value of B<layout> should be either 'qwerty' or 'dvorak'.  If
+a value different from those is specified, the default value of 'qwerty'
+is used.
+
+=back
+
+Calling effort like: C<effort($text)> is identical to calling
+it like this
+
+ effort(
+    text   => $text,
+    layout => 'qwerty',
+ );
 
 =cut
 
@@ -82,7 +121,7 @@ sub effort {
                 if( exists $basis{$metric}{$_} ) {
                     $sum{$metric} += $basis{$metric}{$_};
                 } else {
-                    warn "$metric for '$_' was not found\n";
+                    #warn "$metric for '$_' was not found\n";
                     $basis{$metric}{$_} = 0;
                 }
             }
@@ -102,7 +141,7 @@ sub effort {
 =head2 characters
 
 The number of recognized characters in the text.  This is similar in
-spirit to the Unix command C<wc -c> but will provides a result not
+spirit to the Unix command C<wc -c> but provides a result not
 greater than the Unix command.  Only those characters which are encoded
 in the internal keyboard layout will be counted.  That means that accented
 characters, Unicode characters, control characters, etc. are not included
@@ -128,7 +167,7 @@ then returns to the home position before moving on to the next key.
 Of course, this is not how people actually type, but the model should
 result in an upper-bound for the amount of finger movement.
 
-=head2 joules
+=head2 energy
 
 The number of Joules of energy required to type the text.  This metric is
 the most inclusive in that it tries to accomodate the values of both the
@@ -144,7 +183,7 @@ line with ISO 9241-4:1998, which specifies standards for such things.
 =head1 SEE ALSO
 
 Tactus Keyboard article on the mechanics and standards of
-keyboard design - http://www.tactuskeyboard.com/keymech.htm
+keyboard design - L<http://www.tactuskeyboard.com/keymech.htm>
 
 =head1 AUTHOR
 
@@ -160,7 +199,7 @@ Allow keyboard layouts other than QWERTY and Dvorak
 
 =item *
 
-Allow keyboarrds other than US-104
+Allow keyboards other than US-104
 
 =item *
 
