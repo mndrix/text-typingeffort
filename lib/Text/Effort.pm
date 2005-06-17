@@ -123,13 +123,25 @@ sub effort {
         }
     }
 
-    my %sum;
-    while(<$fh>) {
-        chomp;
-        s/^\s*//;
-        s/\s*$//;
+    # get the first line of text
+    my $line;
+    if( $fh ) {
+        $line = <$fh>;
+    } else {
+    }
 
-        foreach(split //) {
+    my %sum;
+    while( defined $line ) {
+        if( chomp $line ) {
+            # the newline counts as a character, a keypress and an ENTER
+            $sum{characters}++;
+            $sum{presses}++;
+            $sum{distance} += $basis{ENTER};
+        }
+        $line =~ s/^\s*//;
+        $line =~ s/\s*$//;
+
+        foreach(split //, $line) {
             $sum{characters}++;
 
             foreach my $metric (qw/presses distance/) {
@@ -140,6 +152,12 @@ sub effort {
                     $basis{$metric}{$_} = 0;
                 }
             }
+        }
+
+        # get the next line
+        if( $fh ) {
+            $line = <$fh>;
+        } else {
         }
     }
 
@@ -156,11 +174,9 @@ sub effort {
 =head2 characters
 
 The number of recognized characters in the text.  This is similar in
-spirit to the Unix command C<wc -c> but provides a result not
-greater than the Unix command.  Only those characters which are encoded
-in the internal keyboard layout will be counted.  That means that accented
-characters, Unicode characters, control characters, etc. are not included
-in this metric.
+spirit to the Unix command C<wc -c>.  Only those characters which are encoded
+in the internal keyboard layout will be counted.  That excludes accented
+characters, Unicode characters and control characters but includes newlines.
 
 =head2 presses
 
@@ -171,10 +187,10 @@ was pressed.
 =head2 distance
 
 The distance, in millimeters, that the fingers travelled while typing
-the text.  This distance includes movement required for the Shift key,
-but does not include the vertical movement the finger makes as the key
-descends during a press.  Perhaps a better name for this metric would
-be horizontal_distance, but that's too long ;-)
+the text.  This distance includes movement required for the Shift and
+Enter keys, but does not include the vertical movement the finger makes
+as the key descends during a press.  Perhaps a better name for this
+metric would be horizontal_distance, but that's too long ;-)
 
 The model for determining this metric is very simplistic.  It assumes
 that a finger moves from its home position to the destination key and
@@ -265,6 +281,8 @@ sub _basis {
     $basis{distance}{' '} = shift @keyboard;
     $basis{presses}{' '} = 1;
 
+    $basis{ENTER} = shift @keyboard;
+
     # populate $basis{clicks} and $basis{mm}
     while( my($shift, $d) = splice(@keyboard, 0, 2) ) {
         my($lc, $uc) = splice(@layout, 0, 2);
@@ -312,7 +330,7 @@ sub us_104 {
         # distances the finger must move to reach the left shift,
         # right shift and space, respectively (in millimeters)
         qw{
-            15 30 0
+            15 30 0 35
         },
 
         # define the `12345 row

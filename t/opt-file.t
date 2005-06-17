@@ -33,7 +33,7 @@ sub results_ok {
 
     # floating point compare can be wierd
     my $energy = sprintf("%.4f", delete $a->{energy});
-    my $should = "4.4388";
+    my $should = "4.7618";
     is( $energy, $should, "$msg: energy" );
 
     # now compare the hash
@@ -41,9 +41,9 @@ sub results_ok {
         eq_hash(
             $a,
             {
-                characters => 86,
-                presses    => 88,
-                distance   => 1900,
+                characters => 88,
+                presses    => 90,
+                distance   => 2040,
             }
         ),
         "$msg: characters, presses and distance"
