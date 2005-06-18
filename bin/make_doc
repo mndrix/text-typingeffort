@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+
+use Pod::Simple::HTMLBatch;
+
+push @ARGV, 'lib', 'doc';
+Pod::Simple::HTMLBatch::go;
