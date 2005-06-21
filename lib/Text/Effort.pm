@@ -109,7 +109,8 @@ sub effort {
     return unless defined $opts{file} or defined $opts{text};
 
     # fill in the preliminary data structures as needed
-    %basis = &_basis( $opts{layout} ) unless $basis{LAYOUT} eq $opts{layout};
+    %basis = &_basis( $opts{layout} )
+        unless $basis{LAYOUT} and $basis{LAYOUT} eq $opts{layout};
 
     my $fh;   # the filehandle for reading the text
     my $text; # or a reference to the text itself
