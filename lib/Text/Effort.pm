@@ -109,7 +109,7 @@ sub effort {
     return unless defined $opts{file} or defined $opts{text};
 
     # fill in the preliminary data structures as needed
-    %basis = &_basis( $opts{layout} ) unless %basis;
+    %basis = &_basis( $opts{layout} ) unless $basis{LAYOUT} eq $opts{layout};
 
     my $fh;   # the filehandle for reading the text
     my $text; # or a reference to the text itself
@@ -130,7 +130,7 @@ sub effort {
 
     # get the first line of text
     my $line;
-    my $line_rx = ".*?(?:\n|\r|\r\n)";  # match a line
+    my $line_rx = ".*(?:\n|\r|\r\n)?";  # match a line
     if( $fh ) {
         $line = <$fh>;
     } else {
@@ -155,7 +155,7 @@ sub effort {
                 if( exists $basis{$metric}{$_} ) {
                     $sum{$metric} += $basis{$metric}{$_};
                 } else {
-                    #warn "$metric for '$_' was not found\n";
+                    warn "$metric for '$_' was not found\n";
                     $basis{$metric}{$_} = 0;
                 }
             }
@@ -274,6 +274,7 @@ sub _basis {
     my ($desired) = @_;
 
     my %basis;
+    $basis{LAYOUT} = $desired;
 
     # get the keyboard characteristics
     my @keyboard = &us_104;
