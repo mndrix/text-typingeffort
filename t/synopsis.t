@@ -10,6 +10,11 @@ ok(1, 'use Text::Effort');
 my $effort = effort("The quick brown fox jumps over the lazy dog");
 isa_ok( $effort, 'HASH', 'result is a hashref' );
 
+# floating point compare can be wierd
+my $energy = sprintf("%.4f", delete $effort->{energy});
+my $should = "2.2194";
+is( $energy, $should, 'energy correct' );
+
 ok(
     eq_hash(
         $effort,
@@ -22,7 +27,3 @@ ok(
     'characters, presses and distance correct'
 );
 
-# floating point compare can be wierd
-my $energy = sprintf("%.4f", $effort->{energy});
-my $should = "2.1234";
-is( $energy, $should, 'energy correct' );
