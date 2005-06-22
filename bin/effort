@@ -13,7 +13,7 @@ my $effort = effort(
 my $chars = $effort->{characters};
 my $keys  = $effort->{presses};
 my $dist  = $effort->{distance};
-my $joules= $effort->{joules};
+my $joules= $effort->{energy};
 
 print "$chars characters\n";
 print "$keys clicks\n";
