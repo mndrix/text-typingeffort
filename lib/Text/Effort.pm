@@ -250,7 +250,12 @@ Count the unrecognized characters
 
 =item *
 
-Allow keyboard layouts other than QWERTY and Dvorak
+Add support for the 'aset' keyboard which is like QWERTY, but has the 
+dfjk keys swapped with the etni keys.
+
+=item *
+
+Allow the user to specify custom keyboard layouts
 
 =item *
 
