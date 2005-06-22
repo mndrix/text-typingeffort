@@ -150,13 +150,14 @@ sub effort {
         $line =~ s/\s*$//;
 
         foreach(split //, $line) {
-            $sum{characters}++;
+            # only count the character if we recognize it
+            $sum{characters}++ if exists $basis{presses}{$_};
 
             foreach my $metric (qw/presses distance/) {
                 if( exists $basis{$metric}{$_} ) {
                     $sum{$metric} += $basis{$metric}{$_};
                 } else {
-                    warn "$metric for '$_' was not found\n";
+                    #warn "$metric for '$_' was not found\n";
                     $basis{$metric}{$_} = 0;
                 }
             }
@@ -241,6 +242,10 @@ Michael Hendricks, E<lt>michael@palmcluster.orgE<gt>
 
 Add an 'accumulator' option which allows effort() to add it's results
 to those from a previous call to effort().
+
+=item *
+
+Count the unrecognized characters
 
 =item *
 
