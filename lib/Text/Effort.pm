@@ -135,7 +135,8 @@ sub effort {
     if( $fh ) {
         $line = <$fh>;
     } else {
-        $line = $1 if $$text =~ /($line_rx)/g;
+        $$text =~ /($line_rx)/g;
+        $line = $1; # the pattern always matches (I think)
     }
 
     my %sum;

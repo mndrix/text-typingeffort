@@ -3,7 +3,7 @@
 use Test::More;
 use File::Temp;
 
-plan tests => 6;
+plan tests => 7;
 
 BEGIN{ use_ok('Text::Effort', 'effort') }
 
@@ -23,6 +23,18 @@ close($tmp);
 # file parameter as a filename
 my $effort = effort( file  => "$tmp" );
 results_ok( $effort, 'file=filename' );
+
+# find a non-existent file
+my $junk_file = 'a';
+$junk_file .= 'a' while length($junk_file)<64 and -e $junk_file;
+SKIP: {
+    skip 'Unable to find a non-existent file', 1 unless length($junk_file)<64;
+
+    eval {
+        $effort = effort( file => $junk_file );
+    };
+    ok( $@, "died for non-existent file" );
+}
 
 
 ############### helper sub ###################
