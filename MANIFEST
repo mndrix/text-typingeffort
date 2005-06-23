@@ -3,3 +3,13 @@ Makefile.PL
 MANIFEST
 README
 lib/Text/TypingEffort.pm
+t/pod-coverage.t
+t/pod.t
+t/synopsis.t
+t/unrecognized.t
+t/scalar-ref.t
+t/leading.t
+t/opt-layout.t
+t/opt-file.t
+t/dying.t
+t/opt-text.t

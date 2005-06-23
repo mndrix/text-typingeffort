@@ -1,7 +1,7 @@
 # Is the 'layout' option handled correctly?
 
 use Test::More;
-plan tests => 9;
+plan tests => 12;
 
 BEGIN{ use_ok('Text::TypingEffort', 'effort') }
 
@@ -16,13 +16,17 @@ module! Durn!
 $effort = effort( text=>$text, layout=>'qwerty' );
 results_ok( $effort, 'qwerty', 'layout=qwerty' );
 
-# unknown layout
-$effort = effort( text=>$text, layout=>'this is not a layout name' );
-results_ok( $effort, 'unknown', 'layout=unknown' );
-
 # dvorak layout
 $effort = effort( text=>$text, layout=>'dvorak' );
 results_ok( $effort, 'dvorak', 'layout=dvorak' );
+
+# aset layout
+$effort = effort( text=>$text, layout=>'aset' );
+results_ok( $effort, 'aset', 'layout=aset' );
+
+# unknown layout
+$effort = effort( text=>$text, layout=>'this is not a layout name' );
+results_ok( $effort, 'unknown', 'layout=unknown' );
 
 
 ############### helper sub ###################
@@ -39,6 +43,13 @@ sub results_ok {
                 characters => 269,
                 presses    => 286,
                 distance   => 4010,
+        };
+    } elsif( $layout eq 'aset' ) {
+        $joules = '10.6285';
+        $others = {
+                characters => 269,
+                presses    => 286,
+                distance   => 4520,
         };
     } else {
         $joules = '14.8963';

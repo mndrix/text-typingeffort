@@ -1,16 +1,11 @@
-Text-TypingEffort version 0.01
+Text-TypingEffort version 0.02
 ========================
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+DESCRIPTION
 
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+Text::TypingEffort is used to calculate how much physical effort was
+required to type a given text. Several metrics of effort are used.  For
+further information, consult the POD.
 
 INSTALLATION
 
@@ -26,8 +21,6 @@ DEPENDENCIES
 This module requires no external modules.
 
 COPYRIGHT AND LICENCE
-
-Put the correct copyright and licence information here.
 
 Copyright (C) 2005 by Michael Hendricks
 
