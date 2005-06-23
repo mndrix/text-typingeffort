@@ -4,8 +4,8 @@
 use Test::More;
 plan tests => 4;
 
-use Text::Effort qw/effort/;
-ok(1, 'use Text::Effort');
+use Text::TypingEffort qw/effort/;
+ok(1, 'use Text::TypingEffort');
 
 my $effort = effort("The quick brown fox jumps over the lazy dog");
 isa_ok( $effort, 'HASH', 'result is a hashref' );

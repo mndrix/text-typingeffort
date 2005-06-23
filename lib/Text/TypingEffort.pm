@@ -1,4 +1,4 @@
-package Text::Effort;
+package Text::TypingEffort;
 
 use 5.006;
 use strict;
@@ -15,11 +15,11 @@ our %basis;  # stores the basis for our calculations
 
 =head1 NAME
 
-Text::Effort - calculate the effort required to type a given text
+Text::TypingEffort - calculate the effort required to type a given text
 
 =head1 SYNOPSIS
 
-  use Text::Effort qw/effort/;
+  use Text::TypingEffort qw/effort/;
   
   my $effort = effort("The quick brown fox jumps over the lazy dog");
 
@@ -34,7 +34,7 @@ C<$effort> will be a hashref something like this
 
 =head1 DESCRIPTION
 
-Text::Effort is used to calculate how much physical effort was
+Text::TypingEffort is used to calculate how much physical effort was
 required to type a given text.  Several metrics of effort are used.
 These metrics are described in detail in the L</METRICS> section.
 

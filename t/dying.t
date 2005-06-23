@@ -3,7 +3,7 @@
 use Test::More;
 plan tests => 2;
 
-BEGIN{ use_ok('Text::Effort', 'effort') }
+BEGIN{ use_ok('Text::TypingEffort', 'effort') }
 
 eval {
     effort();

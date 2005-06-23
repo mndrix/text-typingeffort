@@ -3,7 +3,7 @@
 use Test::More;
 plan tests => 9;
 
-BEGIN{ use_ok('Text::Effort', 'effort') }
+BEGIN{ use_ok('Text::TypingEffort', 'effort') }
 
 my $text = <<"";
 This is a test of the Dvorak layout vs QWERTY

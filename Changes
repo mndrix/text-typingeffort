@@ -1,6 +1,6 @@
-Revision history for Perl extension Text::Effort.
+Revision history for Perl extension Text::TypingEffort.
 
 0.01  Wed Jun 15 16:30:45 2005
 	- original version; created by h2xs 1.23 with options
-		-AX -b 5.6.0 Text::Effort
+		-AX -b 5.6.0 Text::TypingEffort
 

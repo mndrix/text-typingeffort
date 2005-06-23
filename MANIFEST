@@ -2,5 +2,4 @@ Changes
 Makefile.PL
 MANIFEST
 README
-t/Text-Effort.t
-lib/Text/Effort.pm
+lib/Text/TypingEffort.pm
