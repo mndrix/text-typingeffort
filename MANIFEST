@@ -13,3 +13,4 @@ t/opt-layout.t
 t/opt-file.t
 t/dying.t
 t/opt-text.t
+t/empty.t
