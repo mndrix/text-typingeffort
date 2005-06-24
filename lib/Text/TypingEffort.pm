@@ -163,6 +163,7 @@ sub effort {
     }
 
     my %sum;
+    @sum{qw(characters presses distance)} = (0) x 3;
     while( defined $line ) {
         if( chomp $line ) {
             # the newline counts as a character, a keypress and an ENTER
