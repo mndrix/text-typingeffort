@@ -30,6 +30,7 @@ C<$effort> will be a hashref something like this
       presses    => 44,     # key presses need to type the text
       distance   => 950,    # millimeters the fingers moved while typing
       energy     => 2.2..., # the energy (Joules) used while typing
+      unknowns   => {},     # histogram of unrecognized characters
   };
 
 =head1 DESCRIPTION
@@ -45,41 +46,43 @@ boss how hard you're working.
 =head2 Function Quick Reference
 
 The following quick reference provides brief information about the 
-the parameters that the functions can take.  More detailed information is
+the arguments that the functions can take.  More detailed information is
 given below.
 
  # effort() with a single argument
  my $effort = effort(
  
-    $text | \$text                      # the text to analyze
+    $text | \$text                        # the text to analyze
  );
  
  # effort() with options
  my $effort = effort(
  
-    text   => $text | \$text,           # the text to analyze
-    file   => $filename | $filehandle,  # analyze a file
-    layout => 'qwerty'                  # keyboard layout
-            | 'dvorak'
-            | 'aset',
+    text     => $text | \$text,           # the text to analyze
+    file     => $filename | $filehandle,  # analyze a file
+    layout   => 'qwerty'                  # keyboard layout
+              | 'dvorak'
+              | 'aset',
+    unknowns => 0 | 1,                    # tally unknown chars?
  );
 
 =head1 FUNCTIONS
 
 =head2 effort $TEXT | \$TEXT
 
-The parameter should be a scalar or a reference to a scalar which contains
+The argument should be a scalar or a reference to a scalar which contains
 the text to be analyzed.  Leading whitespace on each line of C<$TEXT>
 is ignored since a decent text editor handles that for the typist.
 Only characters found on a standard US-104 keyboard are tallied in the
 metrics.  That means that accented characters, unicode, etc. are not
-included.  If a character is unrecognized, it will be silently ignored.
+included.  If a character is unrecognized, it is counted under the
+'unknowns' metric.
 
-=head2 effort %PARAMETERS
+=head2 effort %ARGUMENTS
 
-effort() may also be called with a list of named parameters.  This allows
+effort() may also be called with a list of named arguments.  This allows
 more flexibility in how the metrics are calculated.  Below is a list of
-acceptable (or required) parameters.
+acceptable (or required) arguments.
 
 =over 4
 
@@ -97,19 +100,36 @@ is open for reading or a file name.
 
 Default: qwerty
 
-This parameter specifies the keyboard layout to use when calculating
+This argument specifies the keyboard layout to use when calculating
 metrics.  Acceptable, case-insensitive values for B<layout> are: qwerty,
 dvorak, aset.  If some other value is provided, the default value of
 'qwerty' is used.
 
+=item B<unknowns>
+
+Default: 0
+
+Should a histogram of unrecognized characters be returned with the other
+metrics?  A true value indicates yes and a false value no. Tallying this
+histogram takes a little bit more work in the inner loop and therefore
+makes processing ever so slightly slower.  It can be useful for seeing
+how much of the text was not counted in the other metrics.
+
+See B<unknowns> in the L</METRICS> section for information on how this option
+affects C<effort>'s return value.
+
 =back
 
-Calling effort like: C<effort($text)> is identical to calling
-it like this
+Calling effort like this
+
+ effort($text)
+
+is identical to calling it like this
 
  effort(
-    text   => $text,
-    layout => 'qwerty',
+    text     => $text,
+    layout   => 'qwerty',
+    unknowns => 0,
  );
 
 =cut
@@ -117,7 +137,8 @@ it like this
 sub effort {
     # establish the default options
     my @DEFAULTS = (
-        layout => 'qwerty',
+        layout   => 'qwerty',
+        unknowns => 0,
     );
 
     # establish our current options
@@ -158,12 +179,14 @@ sub effort {
     if( $fh ) {
         $line = <$fh>;
     } else {
+        $$text =~ /^/g; # reset the regex in case we're given same arg twice
         $$text =~ /($line_rx)/g;
         $line = $1; # the pattern always matches (I think)
     }
 
     my %sum;
     @sum{qw(characters presses distance)} = (0) x 3;
+    $sum{unknowns} = {} if $opts{unknowns};
     while( defined $line ) {
         if( chomp $line ) {
             # the newline counts as a character, a keypress and an ENTER
@@ -179,11 +202,10 @@ sub effort {
             $sum{characters}++ if exists $basis{presses}{$_};
 
             foreach my $metric (qw/presses distance/) {
-                if( exists $basis{$metric}{$_} ) {
+                if( defined $basis{$metric}{$_} ) {
                     $sum{$metric} += $basis{$metric}{$_};
-                } else {
-                    #warn "$metric for '$_' was not found\n";
-                    $basis{$metric}{$_} = 0;
+                } elsif( $opts{unknowns} ) {
+                    $sum{unknowns}{$metric}{$_}++;
                 }
             }
         }
@@ -250,6 +272,36 @@ a copy).
 The physical charactersistics of the keyboard are assumed to be roughly in
 line with ISO 9241-4:1998, which specifies standards for such things.
 
+=head2 unknowns
+
+A histogram of the unrecognized characters encountered during processing.
+This includes any control characters, accented characters or unicode
+characters.  Generally, anything other than the letters, numbers and
+punctuation found on a standard U.S. keyboard will be counted here.
+
+If all characters were recognized, the value will be an empty hashref.
+If any characters were unknown, the value will be a hashref something
+like this:
+
+ unknowns => {
+    presses => {
+        Å => 2,
+        Ö => 3,
+    },
+    distance => {
+        Å => 2,
+        Ö => 3,
+    },
+ }
+
+The key indicates the metric for which information was missing.  The value
+is a hash indicating the character and the number of times it occurred.
+There will be no entries in the hash for the B<characters> or B<energy>
+metrics as these are incidental to the other two.
+
+This metric is only added to the result if the B<unknowns> option was
+specified.
+
 =head1 SEE ALSO
 
 Tactus Keyboard article on the mechanics and standards of
@@ -257,7 +309,7 @@ keyboard design - L<http://www.tactuskeyboard.com/keymech.htm>
 
 =head1 AUTHOR
 
-Michael Hendricks, E<lt>michael@palmcluster.orgE<gt>
+Michael Hendricks E<lt>michael@palmcluster.orgE<gt>
 
 =head1 TODO
 
@@ -267,10 +319,6 @@ Michael Hendricks, E<lt>michael@palmcluster.orgE<gt>
 
 Add an 'accumulator' option which allows effort() to add it's results
 to those from a previous call to effort().
-
-=item *
-
-Count the unrecognized characters
 
 =item *
 

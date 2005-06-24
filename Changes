@@ -3,9 +3,12 @@ Revision history for Perl extension Text::TypingEffort.
 0.02
     [Features]
     - Added support for the ASET keyboard layout [cpan #13389]
+    - Added the 'unknowns' option.
 
     [Squashes]
-    - Fixed a bug which caused warnings when analyzing the empty string
+    - Fixed a bug which caused warnings when analyzing the empty string.
+    - Fixed a bug which caused all metrics to be 0 when the same scalarref
+      was passed to effort() twice in a row.
 
 0.01  Wed Jun 22 20:18:45 2005
     - first version uploaded to CPAN
