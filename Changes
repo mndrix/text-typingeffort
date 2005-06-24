@@ -1,7 +1,11 @@
 Revision history for Perl extension Text::TypingEffort.
 
 0.02
-    - Added support for the ASET keyboard layout
+    [Features]
+    - Added support for the ASET keyboard layout [cpan #13389]
+
+    [Squashes]
+    - Fixed a bug which caused warnings when analyzing the empty string
 
 0.01  Wed Jun 22 20:18:45 2005
     - first version uploaded to CPAN
