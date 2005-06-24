@@ -42,6 +42,28 @@ This module is useful for determining which keyboard layout is
 more efficient, for making API/language design decisions, or to show your
 boss how hard you're working.
 
+=head2 Function Quick Reference
+
+The following quick reference provides brief information about the 
+the parameters that the functions can take.  More detailed information is
+given below.
+
+ # effort() with a single argument
+ my $effort = effort(
+ 
+    $text | \$text                      # the text to analyze
+ );
+ 
+ # effort() with options
+ my $effort = effort(
+ 
+    text   => $text | \$text,           # the text to analyze
+    file   => $filename | $filehandle,  # analyze a file
+    layout => 'qwerty'                  # keyboard layout
+            | 'dvorak'
+            | 'aset',
+ );
+
 =head1 FUNCTIONS
 
 =head2 effort $TEXT | \$TEXT
