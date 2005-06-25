@@ -320,19 +320,6 @@ Michael Hendricks E<lt>michael@palmcluster.orgE<gt>
 Add an 'accumulator' option which allows effort() to add it's results
 to those from a previous call to effort().
 
-=item *
-
-Allow the user to specify custom keyboard layouts
-
-=item *
-
-Allow keyboards other than US-104
-
-=item *
-
-Add options for specifying the characteristics of the keyboard such as
-key displacement and the force required to depress the keys.
-
 =back
 
 =head1 COPYRIGHT AND LICENSE
