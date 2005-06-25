@@ -46,7 +46,7 @@ boss how hard you're working.
 =head2 Function Quick Reference
 
 The following quick reference provides brief information about the 
-the arguments that the functions can take.  More detailed information is
+arguments that the functions can take.  More detailed information is
 given below.
 
  # effort() with a single argument
@@ -82,30 +82,46 @@ included.  If a character is unrecognized, it is counted under the
 
 effort() may also be called with a list of named arguments.  This allows
 more flexibility in how the metrics are calculated.  Below is a list of
-acceptable (or required) arguments.
+acceptable (or required) arguments.  In summary, calling effort like this
 
-=over 4
+ effort($text);
 
-=item B<text>
+is identical to calling it like this
 
-=item B<file>
+ effort(
+    text     => $text,
+    layout   => 'qwerty',
+    unknowns => 0,
+ );
 
-One of these two options must be specified.  If neither is specified,
-effort() will C<die>.  The value of B<text>
-should be a scalar or reference to a scalar containing the text to
-analyze.  The value of B<file> should be a filehandle which
-is open for reading or a file name.
 
-=item B<layout>
+=head3 text
+
+Specifies the text to be analyzed.  The value should be either a scalar or
+a reference to a scalar which contains the text.  If neither this argument
+nor B<file> is specified, C<effort> will die.
+
+=head3 file
+
+Specifies a file which contains the text to be analyzed.  If the value
+is a filehandle which is open for reading, the text will be read from that
+file handle.  The filehandle will remain open after C<effort> is finished 
+with it.
+
+If the value is a filename, the file will be opened and the text for analysis
+read from the file.  If neither this argument nor B<text> is specified,
+C<effort> will die.
+
+=head3 layout
 
 Default: qwerty
 
-This argument specifies the keyboard layout to use when calculating
-metrics.  Acceptable, case-insensitive values for B<layout> are: qwerty,
-dvorak, aset.  If some other value is provided, the default value of
-'qwerty' is used.
+Specifies the keyboard layout to use when calculating metrics.
+Acceptable, case-insensitive values for B<layout> are: qwerty, dvorak,
+aset.  If some other value is provided, the default value of 'qwerty'
+is used.
 
-=item B<unknowns>
+=head3 unknowns
 
 Default: 0
 
@@ -117,20 +133,6 @@ how much of the text was not counted in the other metrics.
 
 See B<unknowns> in the L</METRICS> section for information on how this option
 affects C<effort>'s return value.
-
-=back
-
-Calling effort like this
-
- effort($text)
-
-is identical to calling it like this
-
- effort(
-    text     => $text,
-    layout   => 'qwerty',
-    unknowns => 0,
- );
 
 =cut
 
@@ -295,12 +297,12 @@ like this:
  }
 
 The key indicates the metric for which information was missing.  The value
-is a hash indicating the character and the number of times it occurred.
-There will be no entries in the hash for the B<characters> or B<energy>
-metrics as these are incidental to the other two.
+is a hash indicating the character and the number of times that character
+occurred.  There will be no entries in the hash for the B<characters>
+or B<energy> metrics as these are incidental to the other two.
 
 This metric is only added to the result if the B<unknowns> option was
-specified.
+specified and true.
 
 =head1 SEE ALSO
 
@@ -311,7 +313,10 @@ keyboard design - L<http://www.tactuskeyboard.com/keymech.htm>
 
 Michael Hendricks E<lt>michael@palmcluster.orgE<gt>
 
-=head1 TODO
+=head1 BUGS/TODO
+
+See L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort>
+to view or report bugs.
 
 =over 2
 
