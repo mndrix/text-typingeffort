@@ -9,7 +9,7 @@ require Exporter;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( effort );
-our $VERSION = '0.02';
+our $VERSION = '0.20';
 
 our %basis;  # stores the basis for our calculations
 

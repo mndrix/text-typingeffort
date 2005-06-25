@@ -1,4 +1,4 @@
-Text-TypingEffort version 0.02
+Text-TypingEffort version 0.20
 ========================
 
 DESCRIPTION
@@ -18,7 +18,7 @@ To install this module type the following:
 
 DEPENDENCIES
 
-This module requires no external modules.
+   Test::More - version 0.31 or higher
 
 COPYRIGHT AND LICENCE
 
