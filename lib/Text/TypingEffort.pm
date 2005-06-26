@@ -64,6 +64,7 @@ given below.
               | 'dvorak'
               | 'aset',
     unknowns => 0 | 1,                    # tally unknown chars?
+    initial  => \%metrics,                # set initial values
  );
 
 =head1 FUNCTIONS
@@ -86,12 +87,13 @@ acceptable (or required) arguments.  In summary, calling effort like this
 
  effort($text);
 
-is identical to calling it like this
+is identical to explicitly specifying all the defaults like this
 
  effort(
     text     => $text,
     layout   => 'qwerty',
     unknowns => 0,
+    initial  => {},
  );
 
 
@@ -134,6 +136,31 @@ how much of the text was not counted in the other metrics.
 See B<unknowns> in the L</METRICS> section for information on how this option
 affects C<effort>'s return value.
 
+=head3 initial
+
+Default: {}
+
+Sets the initial values for each of the metrics.  This option is the way to
+have C<effort> accumulate the results of multiple calls.  By doing something
+like
+
+ $effort = effort($text_1);
+ $effort = effort(text=>$text_2, initial=>$effort);
+
+you get the same results as if you had done
+
+ $effort = effort($text_1 . $text_2);
+
+except the former scales more gracefully.  The value of B<initial> should
+be a hashref with keys and values similar to the result of a previous
+call to C<effort>.  If the hashref does not contain a key-value pair
+for a given metric, the initial value of that metric will be its normal
+default value (generally 0).
+
+If the value of B<initial> is not a hashref, C<effort> proceeds as if
+the B<initial> argument were not present at all.  This behavior may
+change in the future, so don't rely upon it.
+
 =cut
 
 sub effort {
@@ -141,6 +168,7 @@ sub effort {
     my @DEFAULTS = (
         layout   => 'qwerty',
         unknowns => 0,
+        initial  => {},
     );
 
     # establish our current options
@@ -186,15 +214,28 @@ sub effort {
         $line = $1; # the pattern always matches (I think)
     }
 
+    # set the default initial values for the metrics
     my %sum;
     @sum{qw(characters presses distance)} = (0) x 3;
     $sum{unknowns} = {} if $opts{unknowns};
+
+    # munge the initial values based on the 'initial' option
+    if( ref($opts{initial}) eq 'HASH' and keys %{$opts{initial}} ) {
+        for (qw/characters presses distance/) {
+            $sum{$_} = $opts{initial}{$_} if defined $opts{initial}{$_};
+        }
+        for (qw/presses distance/) {
+            $sum{unknowns}{$_} = { %{ $opts{initial}{unknowns}{$_} } }
+                if defined $opts{initial}{unknowns}{$_};
+        }
+    }
+
     while( defined $line ) {
         if( chomp $line ) {
             # the newline counts as a character, a keypress and an ENTER
             $sum{characters}++;
             $sum{presses}++;
-            $sum{distance} += $basis{ENTER};
+            $sum{distance} += $basis{distance}{ENTER};
         }
         $line =~ s/^\s*//;
         $line =~ s/\s*$//;
@@ -226,7 +267,6 @@ sub effort {
 
     close $fh if $close_fh;
 
-    $sum{distance} = 2*$sum{distance};  # initially, distance is only one-way
     $sum{energy} = (&J_per_mm*$sum{distance}) + (&J_per_click*$sum{presses});
 
     return \%sum;
@@ -318,15 +358,6 @@ Michael Hendricks E<lt>michael@palmcluster.orgE<gt>
 See L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort>
 to view or report bugs.
 
-=over 2
-
-=item *
-
-Add an 'accumulator' option which allows effort() to add it's results
-to those from a previous call to effort().
-
-=back
-
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2005 by Michael Hendricks
@@ -360,10 +391,10 @@ sub _basis {
     my($lshift,$rshift) = splice(@keyboard, 0, 2);
 
     # the space character is somewhat exceptional
-    $basis{distance}{' '} = shift @keyboard;
+    $basis{distance}{' '} = 2*shift(@keyboard);
     $basis{presses}{' '} = 1;
 
-    $basis{ENTER} = shift @keyboard;
+    $basis{distance}{ENTER} = 2*shift(@keyboard);
 
     # populate $basis{clicks} and $basis{mm}
     while( my($shift, $d) = splice(@keyboard, 0, 2) ) {
@@ -372,8 +403,9 @@ sub _basis {
         $basis{presses}{$lc} = 1;
         $basis{presses}{$uc} = 2;
 
-        $basis{distance}{$lc} = $d;
-        $basis{distance}{$uc} = $d + ($shift eq 'l' ? $lshift : $rshift);
+        # the *2 is because distances are initially one-way
+        $basis{distance}{$lc} = 2*$d;
+        $basis{distance}{$uc} = 2*($d + ($shift eq 'l' ? $lshift : $rshift));
     }
 
     return %basis;
