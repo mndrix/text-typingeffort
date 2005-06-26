@@ -357,8 +357,8 @@ Michael Hendricks E<lt>michael@palmcluster.orgE<gt>
 
 =head1 BUGS/TODO
 
-See L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort>
-to view or report bugs.
+Please submit suggestions and report bugs to the CPAN Bug Tracker at
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort>
 
 =head1 COPYRIGHT AND LICENSE
 
