@@ -30,7 +30,6 @@ C<$effort> will be a hashref something like this
       presses    => 44,     # key presses need to type the text
       distance   => 950,    # millimeters the fingers moved while typing
       energy     => 2.2..., # the energy (Joules) used while typing
-      unknowns   => {},     # histogram of unrecognized characters
   };
 
 =head1 DESCRIPTION
@@ -316,10 +315,13 @@ line with ISO 9241-4:1998, which specifies standards for such things.
 
 =head2 unknowns
 
-A histogram of the unrecognized characters encountered during processing.
-This includes any control characters, accented characters or unicode
-characters.  Generally, anything other than the letters, numbers and
-punctuation found on a standard U.S. keyboard will be counted here.
+This metric is only included in the output if the B<unknowns> argument
+to C<effort> was true.
+
+The value is a histogram of the unrecognized characters encountered during
+processing.  This includes any control characters, accented characters or
+unicode characters.  Generally, anything other than the letters, numbers
+and punctuation found on a standard U.S. keyboard will be counted here.
 
 If all characters were recognized, the value will be an empty hashref.
 If any characters were unknown, the value will be a hashref something
@@ -327,12 +329,12 @@ like this:
 
  unknowns => {
     presses => {
-        Å => 2,
-        Ö => 3,
+        'Å' => 2,
+        'Ö' => 3,
     },
     distance => {
-        Å => 2,
-        Ö => 3,
+        'Å' => 2,
+        'Ö' => 3,
     },
  }
 
