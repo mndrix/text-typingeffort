@@ -1,26 +1,67 @@
 #!/usr/bin/perl
 
+use Getopt::Std;
 use Text::TypingEffort qw(effort);
 
-my $layout = shift;  # get the keyboard layout
-my $file   = shift;  # get the filename that should be processed
+$Getopt::Std::STANDARD_HELP_VERSION = 1;
 
-my $effort = effort(
-    layout => $layout,
-    file   => $file,
-);
+my %opts;            # command-line options go here
+getopts('l:', \%opts);
 
-my $chars = $effort->{characters};
-my $keys  = $effort->{presses};
-my $dist  = $effort->{distance};
-my $joules= $effort->{energy};
+push @ARGV, '-' unless @ARGV;
+
+my $effort = {};  # our accumulator
+foreach (@ARGV) {
+    $effort = effort(
+        file    => $_ eq '-' ? \*STDIN : $_,
+        layout  => $opts{l},
+        initial => $effort,
+    );
+}
+
+my $chars   = $effort->{characters};
+my $presses = $effort->{presses};
+my $dist    = $effort->{distance};
+my $joules  = $effort->{energy};
 
 print "$chars characters\n";
-print "$keys clicks\n";
+print "$presses presses\n";
 print "$dist mm\n";
 print "\n";
-printf "%.1f mm/click\n", $dist/$keys;
-printf "%.1f mm/char\n", $dist/$chars;
-printf "%.2f clicks/char\n", $keys/$chars;
-printf "%.3f Joules total\n", $joules;
+printf "%.1f mm/press\n",     $dist/$presses  if $presses;
+printf "%.1f mm/char\n",      $dist/$chars    if $chars  ;
+printf "%.2f presses/char\n", $presses/$chars if $chars  ;
+printf "%.3f Joules total\n", $joules                    ;
+
+
+sub HELP_MESSAGE {
+    my ($fh) = @_;
+
+    print $fh <<USAGE;
+Usage: $0 [-l layout] [filename [filename [...]]]
+
+'filename' should be the name of a file to analyze.  You may also
+use the special filename '-' to indicate standard input.  If no
+filenames are specified, standard input is used.
+
+Options:
+  -l layout   specify the desired keyboard layout where 'layout' is
+              one of: qwerty, dvorak, aset
+
+USAGE
+}
+
+sub VERSION_MESSAGE {
+    my ($fh) = @_;
+
+    my $rev = sprintf("%d", q$Revision: 71$ =~ /(\d+)/);
+    my $date = sprintf("%s", q$Date: 2005-06-27 (Mon, 27 Jun 2005)$ =~ /\( (.*?) \)/x);
+
+    print $fh <<MSG;
+$0 revision $rev
+   using Text::TypingEffort version $Text::TypingEffort::VERSION
+   last modified $date
+
+MSG
+}
 
