@@ -5,6 +5,7 @@ Revision history for Perl extension Text::TypingEffort.
     - Added support for the ASET keyboard layout [rt.cpan.org 13389]
     - Added the 'unknowns' option.
     - Added the 'initial' option.
+    - Added the effort script.
 
     [Documentation]
     - Added a function quick reference.
