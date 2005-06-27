@@ -1,6 +1,6 @@
 Revision history for Perl extension Text::TypingEffort.
 
-0.20
+0.20 Mon Jun 27 17:00:42 MDT 2005
     [Features]
     - Added support for the ASET keyboard layout [rt.cpan.org 13389]
     - Added the 'unknowns' option.
