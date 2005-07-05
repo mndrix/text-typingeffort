@@ -1,0 +1,9 @@
+pre {
+    border : 1px solid black;
+    background : #ddd;
+    padding : 1mm 0px 1mm 0px;
+}
+
+hr {
+    display : none;
+}
