@@ -80,21 +80,22 @@ given below.
 
 =head1 FUNCTIONS
 
-=head2 effort $TEXT | \$TEXT
+=head2 effort [$TEXT | \$TEXT]
 
 The argument should be a scalar or a reference to a scalar which contains
-the text to be analyzed.  Leading whitespace on each line of C<$TEXT>
+the text to be analyzed.  If no parameter is provided, C<$_> is used
+as the value of C<$TEXT>.  Leading whitespace on each line of C<$TEXT>
 is ignored since a decent text editor handles that for the typist.
-Only characters found on a standard US-104 keyboard are tallied in the
-metrics.  That means that accented characters, unicode, etc. are not
-included.  If a character is unrecognized, it is counted under the
-'unknowns' metric.
+Only characters found on a standard US-104 keyboard are tallied in
+the metrics.  That means that accented characters, unicode, etc. are
+not included.  If a character is unrecognized, it may be counted under
+the 'unknowns' metric (see that documentation).
 
 =head2 effort %ARGUMENTS
 
 effort() may also be called with a list of named arguments.  This allows
 more flexibility in how the metrics are calculated.  Below is a list of
-acceptable (or required) arguments.  In summary, calling effort like this
+acceptable arguments.  In summary, calling effort like this
 
  effort($text);
 
@@ -112,7 +113,7 @@ is identical to explicitly specifying all the defaults like this
 
 Specifies the text to be analyzed.  The value should be either a scalar or
 a reference to a scalar which contains the text.  If neither this argument
-nor B<file> is specified, C<effort> will die.
+nor B<file> is specified, C<$_> is used as the text to analyze.
 
 =head3 file
 
@@ -123,7 +124,7 @@ with it.
 
 If the value is a filename, the file will be opened and the text for analysis
 read from the file.  If neither this argument nor B<text> is specified,
-C<effort> will die.
+C<$_> is used as the text to analyze.
 
 =head3 layout
 
@@ -190,7 +191,7 @@ sub effort {
         %opts = ( @DEFAULTS, @_ );
     }
     
-    return unless defined $opts{file} or defined $opts{text};
+    $opts{text} = $_ unless defined $opts{file} or defined $opts{text};
 
     # fill in the preliminary data structures as needed
     $opts{layout} = lc($opts{layout});

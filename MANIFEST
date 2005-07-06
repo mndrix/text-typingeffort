@@ -4,7 +4,6 @@ MANIFEST
 README
 scripts/effort
 lib/Text/TypingEffort.pm
-t/dying.t
 t/empty.t
 t/leading.t
 t/opt-file.t

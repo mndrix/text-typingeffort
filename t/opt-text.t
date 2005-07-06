@@ -1,7 +1,7 @@
 # Is the 'text' option handled correctly?
 
 use Test::More;
-plan tests => 2;
+plan tests => 3;
 
 BEGIN{ use_ok('Text::TypingEffort', 'effort') }
 
@@ -25,3 +25,8 @@ $effort = effort( text => $text );
 $effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply( $effort, \%ok, 'leading whitespace ignored' );
 
+# no text parameter (use $_ instead)
+$_ = $text;
+$effort = effort;
+$effort->{energy} = sprintf("%.4f", $effort->{energy});
+is_deeply( $effort, \%ok, 'using $_ as default' );
