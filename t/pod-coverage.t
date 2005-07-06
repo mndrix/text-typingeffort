@@ -4,5 +4,5 @@ plan skip_all => "Test::Pod::Coverage 1.00 required for testing POD coverage"
     if $@;
 
 all_pod_coverage_ok(
-    {trustme => [qw( J_per_mm J_per_click dvorak qwerty aset us_104 )]}
+    {trustme => [qw( J_per_mm J_per_click us_104 )]}
 );
