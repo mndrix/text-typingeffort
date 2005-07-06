@@ -22,7 +22,6 @@ is_deeply(
 
 # text parameter as a scalarref
 my $effort = effort( text => \$text );
-use Data::Dumper;
 is_deeply(
     $effort,
     {
