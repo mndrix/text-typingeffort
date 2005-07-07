@@ -4,6 +4,7 @@ Revision history for Perl extension Text::TypingEffort.
     [Features]
     - Added support for user-specified keyboard layouts
     - effort() with no parameters uses $_ [rt.cpan.org 13404]
+    - Added the 'caps' argument [rt.cpan.org 13395]
 
     [Squashes]
     - Removed C<use Data::Dumper> from t/empty.t

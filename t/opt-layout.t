@@ -38,25 +38,25 @@ sub results_ok {
     my $joules;
     my $others;
     if( $layout eq 'dvorak' ) {
-        $joules = '9.4583';
+        $joules = '8.9729';
         $others = {
                 characters => 269,
-                presses    => 286,
-                distance   => 4010,
+                presses    => 282,
+                distance   => 3800,
         };
     } elsif( $layout eq 'aset' ) {
-        $joules = '10.6285';
+        $joules = '10.0054';
         $others = {
                 characters => 269,
-                presses    => 286,
-                distance   => 4520,
+                presses    => 282,
+                distance   => 4250,
         };
     } else {
-        $joules = '14.8963';
+        $joules = '14.2732';
         $others = {
                 characters => 269,
-                presses    => 286,
-                distance   => 6380,
+                presses    => 282,
+                distance   => 6110,
         };
     }
 
@@ -64,8 +64,5 @@ sub results_ok {
     my $energy = sprintf("%.4f", delete $a->{energy});
     is( $energy, $joules, "$msg: energy" );
 
-    ok(
-        eq_hash($a, $others),
-        "$msg: characters, presses and distance"
-    );
+    is_deeply($a, $others, "$msg: characters, presses and distance");
 }

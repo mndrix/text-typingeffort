@@ -6,6 +6,7 @@ scripts/effort
 lib/Text/TypingEffort.pm
 t/empty.t
 t/leading.t
+t/opt-caps.t
 t/opt-file.t
 t/opt-layout.t
 t/opt-text.t

@@ -59,7 +59,7 @@ given below.
     $text | \$text                        # the text to analyze
  );
  
- # effort() with options
+ # effort() with named arguments
  my $effort = effort(
  
     text     => $text | \$text,           # the text to analyze
@@ -69,6 +69,7 @@ given below.
               | 'aset',
     unknowns => 0 | 1,                    # tally unknown chars?
     initial  => \%metrics,                # set initial values
+    caps     => 0 | 2 | 3 | ...           # Caps Lock technique
  );
  
  # layout()
@@ -106,6 +107,7 @@ is identical to explicitly specifying all the defaults like this
     layout   => 'qwerty',
     unknowns => 0,
     initial  => {},
+    caps     => 4,
  );
 
 
@@ -173,6 +175,29 @@ If the value of B<initial> is not a hashref, C<effort> proceeds as if
 the B<initial> argument were not present at all.  This behavior may
 change in the future, so don't rely upon it.
 
+=head3 caps
+
+Default: 4
+
+Determines how strings of consecutive capital letters should be handled.
+The default value of 4 means that four or more capital letters in a
+row should be treated as though the user pressed "Caps Lock" at the
+beginning, then typed the characters and then pressed "Caps Lock" again.
+This behavior more accurately models what typical users do when typing
+strings of capital letters.  You may change the number of capital letters
+that must be in a row in order to trigger this behavior by specifying
+an integer greater than 1 as the value of the B<caps> argument.  If you
+specify, the value 1, the value 2 will be used instead.
+
+If the value of B<caps> is 0, capital letters are treated as though the
+user pressed Shift for each character.
+
+When caps handling is enabled, "capital letter" means any character that
+can be typed without the Shift key when Caps Lock is on.  That includes
+characters such as '.' and '/' and '-' etc.  However, the string of
+consecutive caps must start and end with a real capital letter.  That way,
+a string such as '-----T-----' won't be calculated using Caps Lock.
+
 =cut
 
 sub effort {
@@ -181,6 +206,7 @@ sub effort {
         layout   => 'qwerty',
         unknowns => 0,
         initial  => {},
+        caps     => 4,
     );
 
     # establish our current options
@@ -192,6 +218,7 @@ sub effort {
     }
     
     $opts{text} = $_ unless defined $opts{file} or defined $opts{text};
+    $opts{caps} = 2 if $opts{caps} == 1;
 
     # fill in the preliminary data structures as needed
     $opts{layout} = lc($opts{layout});
@@ -251,6 +278,18 @@ sub effort {
         }
         $line =~ s/^\s*//;
         $line =~ s/\s*$//;
+
+        # handle consecutive chunks typed with Caps Lock on
+        if( $opts{caps} ) {
+            my $c = $opts{caps}-2;
+            my $p = q{[A-Z]};  # pure caps
+            my $d = q{[[:space:]A-Z0-9,./;'\[\]\\=`-]}; # defiled caps
+            if( my $caps = $line =~ s#($p $d {$c,} $p)#\L$1#gx ) {
+                # turn caps on and off for each chunk
+                $sum{presses} += 2*$caps;
+                $sum{distance} += 2*$caps*$basis{distance}{CAPS};
+            }
+        }
 
         foreach(split //, $line) {
             # only count the character if we recognize it
@@ -465,8 +504,9 @@ sub _basis {
     $basis{presses}{' '} = 1;
 
     $basis{distance}{ENTER} = 2*shift(@keyboard);
+    $basis{distance}{CAPS}  = 2*shift(@keyboard);
 
-    # populate $basis{clicks} and $basis{mm}
+    # populate $basis{presses} and $basis{distance}
     while( my($shift, $d) = splice(@keyboard, 0, 2) ) {
         my($lc, $uc) = splice(@layout, 0, 2);
 
@@ -511,10 +551,11 @@ sub J_per_click {
 ################ subroutines for keyboard specifications #################
 sub us_104 {
     return (
-        # distances the finger must move to reach the left shift,
-        # right shift and space, respectively (in millimeters)
+        # distances the finger must move to reach the left Shift,
+        # right Shift, Space, Enter and Caps Lock, respectively
+        # (in millimeters)
         qw{
-            15 30 0 35
+            15 30 0 35 15
         },
 
         # define the `12345 row
