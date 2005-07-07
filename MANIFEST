@@ -3,7 +3,7 @@ Build.PL
 Makefile.PL
 MANIFEST
 README
-scripts/effort
+scripts/effort.pl
 lib/Text/TypingEffort.pm
 t/empty.t
 t/leading.t

@@ -7,6 +7,9 @@ my $build = Module::Build->new
       build_requires  => {
           'Test::More'     => 0.31,
       },
+      script_files    => [
+        'scripts/effort.pl',
+      ],
       create_makefile_pl => 'traditional',
     );
 
