@@ -6,7 +6,7 @@ use Text::TypingEffort qw(effort);
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
 
 my %opts;            # command-line options go here
-getopts('l:', \%opts);
+getopts('l:c:', \%opts);
 
 push @ARGV, '-' unless @ARGV;
 
@@ -16,6 +16,7 @@ foreach (@ARGV) {
         file    => $_ eq '-' ? \*STDIN : $_,
         layout  => $opts{l},
         initial => $effort,
+        caps    => $opts{c},
     );
 }
 
@@ -47,6 +48,8 @@ filenames are specified, standard input is used.
 Options:
   -l layout   specify the desired keyboard layout where 'layout' is
               one of: qwerty, dvorak, aset
+  -c number   specify the number of capital letters that must be in
+              a row before Caps Lock will be used
 
 USAGE
 }
