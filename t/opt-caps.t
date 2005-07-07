@@ -1,7 +1,7 @@
 # Is the 'caps' option handled correctly?
 
 use Test::More;
-plan tests => 7;
+plan tests => 8;
 
 BEGIN{ use_ok('Text::TypingEffort', 'effort') }
 
@@ -18,6 +18,10 @@ my %ok = (
 $effort = effort( text => $text );
 $effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply( $effort, \%ok, 'single caps chunk' );
+
+$effort = effort( text => $text, caps => undef );
+$effort->{energy} = sprintf("%.4f", $effort->{energy});
+is_deeply( $effort, \%ok, 'caps=undef' );
 
 # don't use the caps option
 %ok = (

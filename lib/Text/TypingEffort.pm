@@ -190,7 +190,8 @@ an integer greater than 1 as the value of the B<caps> argument.  If you
 specify, the value 1, the value 2 will be used instead.
 
 If the value of B<caps> is 0, capital letters are treated as though the
-user pressed Shift for each character.
+user pressed Shift for each one.  If C<undef> is given, the default
+value of B<caps> is used.
 
 When caps handling is enabled, "capital letter" means any character that
 can be typed without the Shift key when Caps Lock is on.  That includes
@@ -202,7 +203,7 @@ a string such as '-----T-----' won't be calculated using Caps Lock.
 
 sub effort {
     # establish the default options
-    my @DEFAULTS = (
+    my %DEFAULTS = (
         layout   => 'qwerty',
         unknowns => 0,
         initial  => {},
@@ -212,13 +213,16 @@ sub effort {
     # establish our current options
     my %opts;
     if( @_ == 1 ) {
-        %opts = ( @DEFAULTS, text=>$_[0] );
+        %opts = ( %DEFAULTS, text=>$_[0] );
     } else {
-        %opts = ( @DEFAULTS, @_ );
+        %opts = ( %DEFAULTS, @_ );
     }
     
     $opts{text} = $_ unless defined $opts{file} or defined $opts{text};
-    $opts{caps} = 2 if $opts{caps} == 1;
+
+    # repair the caps argument
+    $opts{caps} = $DEFAULTS{caps} unless defined $opts{caps};
+    $opts{caps} = 2               if     $opts{caps} == 1;
 
     # fill in the preliminary data structures as needed
     $opts{layout} = lc($opts{layout});
