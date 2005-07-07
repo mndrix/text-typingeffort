@@ -460,7 +460,7 @@ keyboard design - L<http://www.tactuskeyboard.com/keymech.htm>
 
 =head1 AUTHOR
 
-Michael Hendricks E<lt>michael@palmcluster.orgE<gt>
+Michael Hendricks <michael@palmcluster.org>
 
 Thanks to Ricardo Signes for a patch for the C<layout> and
 C<register_layout> subroutines.

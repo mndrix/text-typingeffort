@@ -1,4 +1,5 @@
 Changes
+Build.PL
 Makefile.PL
 MANIFEST
 README
@@ -15,4 +16,4 @@ t/pod-coverage.t
 t/pod.t
 t/scalar-ref.t
 t/synopsis.t
-META.yml                                 Module meta-data (added by MakeMaker)
+META.yml
