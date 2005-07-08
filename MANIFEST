@@ -9,11 +9,14 @@ t/empty.t
 t/leading.t
 t/opt-caps.t
 t/opt-file.t
+t/opt-initial.t
 t/opt-layout.t
 t/opt-text.t
 t/opt-unknowns.t
 t/pod-coverage.t
 t/pod.t
 t/scalar-ref.t
+t/sub-layout.t
+t/sub-register_layout.t
 t/synopsis.t
 META.yml
