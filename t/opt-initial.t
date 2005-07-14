@@ -37,6 +37,7 @@ my $effort;
 # try text_1 then text_2
 $effort = effort(text=>$text_1);
 $effort = effort(text=>$text_2, unknowns=>1, initial=>$effort);
+$effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply(
     $effort,
     add_hashes($ok_1, $ok_2),
@@ -46,6 +47,7 @@ is_deeply(
 # try text_2 then text_1
 $effort = effort(text=>$text_2, unknowns=>1);
 $effort = effort(text=>$text_1, initial=>$effort);
+$effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply(
     $effort,
     add_hashes($ok_1, $ok_2),
@@ -56,17 +58,19 @@ is_deeply(
 
 # try initial with an undefined 'characters' value
 $effort = effort( text=>$text_1, initial=>{characters=>undef} );
+$effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply(
     $effort,
-    $ok_1,
+    add_hashes($ok_1, {}),
     'initial characters undefined',
 );
 
 # try initial with a non-reference as the value
 $effort = effort( text=>$text_1, initial=>'please RTFM' );
+$effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply(
     $effort,
-    $ok_1,
+    add_hashes($ok_1, {}),
     'initial not a ref',
 );
 
@@ -95,5 +99,6 @@ sub add_hashes {
             }
         }
     }
+    $result{energy} = sprintf("%.4f", $result{energy});
     return \%result;
 }
