@@ -47,7 +47,7 @@ filenames are specified, standard input is used.
 
 Options:
   -l layout   specify the desired keyboard layout where 'layout' is
-              one of: qwerty, dvorak, aset
+              one of: qwerty, dvorak, aset, xpert
   -c number   specify the number of capital letters that must be in
               a row before Caps Lock will be used
 

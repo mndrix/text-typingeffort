@@ -13,7 +13,7 @@ our @EXPORT_OK = qw(
     layout
     register_layout
 );
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 our %basis;   # stores the basis for our calculations
 our %layouts; # stores the keyboard layouts
@@ -67,6 +67,7 @@ given below.
     layout   => 'qwerty'                  # keyboard layout
               | 'dvorak'
               | 'aset',
+              | 'xpert',
     unknowns => 0 | 1,                    # tally unknown chars?
     initial  => \%metrics,                # set initial values
     caps     => 0 | 2 | 3 | ...           # Caps Lock technique
@@ -134,8 +135,8 @@ Default: qwerty
 
 Specifies the keyboard layout to use when calculating metrics.
 Acceptable, case-insensitive values for B<layout> are: qwerty, dvorak,
-aset.  If some other value is provided, the default value of 'qwerty'
-is used.
+aset, xpert.  If some other value is provided, the default value of
+'qwerty' is used.
 
 =head3 unknowns
 
@@ -829,6 +830,74 @@ sub us_104 {
             , <
             . >
             / ?
+        }
+    ]);
+
+    register_layout('xpert', [
+        # define the 12345 row
+        qw{
+            ` ~
+            1 !
+            2 @
+            3 #
+            4 $
+            5 %
+            6 ^
+            7 &
+            8 *
+            9 (
+            0 )
+            - _
+            = +
+            \ |
+        },
+
+        # define the XPERT row
+        # the actual XPERT keyboard has a second 'e' key
+        # where I put the ';' but since it eliminates the
+        # semicolon, it has to go somewhere
+        qw/
+            x  X
+            p  P
+            ;  :
+            r  R
+            t  T
+            y  Y
+            u  U
+            i  I
+            o  O
+            j  J
+            [  {
+            ]  }
+        /,
+
+        # define the home row
+        qw{
+            q Q
+            s S
+            d D
+            f F
+            n N
+            h H
+            a A
+            e E
+            l L
+            k K
+            ' "
+        },
+
+        # define the ZXCVB row
+        qw{
+            z Z
+            w W
+            c C
+            v V
+            b B
+            g G
+            m M
+            , <
+            . >
+            ? /
         }
     ]);
 }

@@ -1,6 +1,13 @@
 Revision history for Perl extension Text::TypingEffort.
 
-0.21
+0.22
+    [Features]
+    - Added support for the XPeRT keyboard layout
+
+    [Squashes]
+    - Fixed a bug in opt-initial.t on 64-bit machines
+
+0.21 Fri Jul 08 19:53:08 UTC 2005 
     [Features]
     - Added support for user-specified keyboard layouts
     - effort() with no parameters uses $_ [rt.cpan.org 13404]
