@@ -6,6 +6,7 @@ my $build = Module::Build->new
       license         => 'perl',
       build_requires  => {
           'Test::More'     => 0.31,
+          'File::Temp'     => 0.14,   # we need the OO interface
       },
       script_files    => [
         'scripts/effort.pl',

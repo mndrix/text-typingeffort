@@ -13,7 +13,7 @@ our @EXPORT_OK = qw(
     layout
     register_layout
 );
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 our %basis;   # stores the basis for our calculations
 our %layouts; # stores the keyboard layouts
