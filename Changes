@@ -1,15 +1,16 @@
 Revision history for Perl extension Text::TypingEffort.
 
-0.23
+0.23 Wed Aug  3 21:56:22 UTC 2005
    [Squashes]
-   - Specified the build_requries dependency on File::Temp
+   - Specified the build_requires dependency on File::Temp
+   - Guard against false negatives in t/opt-file.t
 
 0.22 Fri Jul 15 19:43:15 UTC 2005
     [Features]
     - Added support for the XPeRT keyboard layout
 
     [Squashes]
-    - Fixed a bug in opt-initial.t on 64-bit machines
+    - Fixed a bug in t/opt-initial.t on 64-bit machines
 
 0.21 Fri Jul 08 19:53:08 UTC 2005 
     [Features]

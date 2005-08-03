@@ -1,12 +1,26 @@
 # Is the 'file' option handled correctly?
 
 use Test::More;
-use File::Temp;
-
-plan tests => 3;
 
 BEGIN{ use_ok('Text::TypingEffort', 'effort') }
 
+# make sure the user has File::Temp and try to make the temporary file
+my $tmp;
+eval {
+    require File::Temp;
+    $tmp = File::Temp->new();
+};
+
+# if there was an error, skip everything
+# otherwise, establish our plan
+if ($@) {
+    plan skip_all => 'test requires object-oriented File::Temp';
+}
+else {
+    plan tests => 3;
+}
+
+# establish some test data
 my $text = "   \tThe quick brown fox jumps over the lazy dog\n";
 $text   .= "\t  The quick brown fox jumps over the lazy dog\n";
 my %ok = (
@@ -16,8 +30,6 @@ my %ok = (
     energy     => 4.7618,
 );
 
-# make the temporary file
-my $tmp = File::Temp->new();
 print $tmp $text;
 seek($tmp, 0, 0);  # rewind
 
@@ -43,4 +55,3 @@ SKIP: {
     };
     ok( $@, "died for non-existent file" );
 }
-
