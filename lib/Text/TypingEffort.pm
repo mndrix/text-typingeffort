@@ -20,7 +20,7 @@ our %layouts; # stores the keyboard layouts
 
 =head1 NAME
 
-Text::TypingEffort - calculate the effort required to type a given text
+Text::TypingEffort - Calculate the effort required to type a given text
 
 =head1 SYNOPSIS
 
