@@ -14,6 +14,7 @@ my %ok = (
     presses    => 92,
     distance   => 2040,
     energy     => 4.7636,
+    hand_changes => 48,
 );
 $effort = effort( text => $text );
 $effort->{energy} = sprintf("%.4f", $effort->{energy});
@@ -29,6 +30,7 @@ is_deeply( $effort, \%ok, 'caps=undef' );
     presses    => 158,
     distance   => 5160,
     energy     => 11.9818,
+    hand_changes => 48,
 );
 $effort = effort(
     text => $text,
@@ -56,6 +58,7 @@ $effort = effort(
     presses    => 60,
     distance   => 1560,
     energy     => 3.6334,
+    hand_changes => 14,
 );
 $effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply( $effort, \%ok, 'mixed:no caps' );
@@ -66,6 +69,7 @@ $effort = effort($text);
     presses    => 48,
     distance   => 900,
     energy     => 2.1083,
+    hand_changes => 14,
 );
 $effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply( $effort, \%ok, 'mixed:standard caps' );
@@ -76,6 +80,7 @@ $effort = effort(text=>$text,caps=>6);
     presses    => 51,
     distance   => 1080,
     energy     => '2.5240',
+    hand_changes => 14,
 );
 $effort->{energy} = sprintf("%.4f", $effort->{energy});
 is_deeply( $effort, \%ok, 'mixed:6 caps' );

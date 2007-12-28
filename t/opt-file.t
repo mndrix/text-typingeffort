@@ -28,6 +28,7 @@ my %ok = (
     presses    => 90,
     distance   => 2040,
     energy     => 4.7618,
+    hand_changes => 48,
 );
 
 print $tmp $text;

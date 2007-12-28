@@ -265,7 +265,7 @@ sub effort {
 
     # munge the initial values based on the 'initial' option
     if( ref($opts{initial}) eq 'HASH' and keys %{$opts{initial}} ) {
-        for (qw/characters presses distance/) {
+        for (qw/characters presses distance hand_changes/) {
             $sum{$_} = $opts{initial}{$_} if defined $opts{initial}{$_};
         }
         for (qw/presses distance/) {
@@ -274,6 +274,7 @@ sub effort {
         }
     }
 
+    my $previous_hand;  # there is no previous hand yet
     while( defined $line ) {
         if( chomp $line ) {
             # the newline counts as a character, a keypress and an ENTER
@@ -299,6 +300,13 @@ sub effort {
         foreach(split //, $line) {
             # only count the character if we recognize it
             $sum{characters}++ if exists $basis{presses}{$_};
+
+            # did the typist change hands?
+            my $hand = $basis{hand}{$_};
+            if ( $hand and $previous_hand ) {
+                $sum{hand_changes}++ if $hand ne $previous_hand;
+            }
+            $previous_hand = $hand if $hand;
 
             foreach my $metric (qw/presses distance/) {
                 if( defined $basis{$metric}{$_} ) {
@@ -425,6 +433,20 @@ a copy).
 The physical charactersistics of the keyboard are assumed to be roughly in
 line with ISO 9241-4:1998, which specifies standards for such things.
 
+=head2 hand_changes
+
+The number of times that a typist would have changed hands while typing the
+text.  For instance, on a QWERTY keyboard, typing the word "the" starts with a
+letter on the left hand, then has a letter on the right hand and then finishes
+with a letter on the left hand:
+
+    t - left hand
+    h - right hand
+    e - left hand
+
+In this case, the typist changed hands twice so the value of C<hand_changes>
+would be 2.
+
 =head2 unknowns
 
 This metric is only included in the output if the B<unknowns> argument
@@ -547,6 +569,9 @@ sub _basis {
 
         $basis{presses}{$lc} = 1;
         $basis{presses}{$uc} = 2;
+
+        # which hand is used to press the key?
+        $basis{hand}{$lc} = $basis{hand}{$uc} = $shift eq 'l' ? 'r' : 'l';
 
         # the *2 is because distances are initially one-way
         $basis{distance}{$lc} = 2*$d;

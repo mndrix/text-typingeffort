@@ -9,12 +9,12 @@ my $text_1 = "   \tThe quick brown fox jumps over the lazy dog\n";
 $text_1   .= "\t  The quick brown fox jumps over the lazy dog\n";
 
 my $text_2 = "The lazy dog chased after the so-called quick föx.";
-
 my $ok_1 = {
     characters => 88,
     presses    => 90,
     distance   => 2040,
     energy     => 4.76178104431768,
+    hand_changes => 48,
 };
 
 my $ok_2 = {
@@ -22,6 +22,7 @@ my $ok_2 = {
     presses    => 50,
     distance   => 890,
     energy     => 2.08710545560919,
+    hand_changes => 18,
     unknowns   => {
         presses => {
             'ö' => 1,
@@ -84,7 +85,7 @@ sub add_hashes {
     my %b = %{ $_[1] };
 
     my %result;
-    for (qw/characters presses distance energy/) {
+    for (qw/characters presses distance energy hand_changes/) {
         $result{$_} = $a{$_} + $b{$_};
     }
     if( $a{unknowns} or $b{unknowns} ) {

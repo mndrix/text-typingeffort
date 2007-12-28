@@ -6,6 +6,7 @@ README
 scripts/effort.pl
 lib/Text/TypingEffort.pm
 t/empty.t
+t/hand-changes.t
 t/leading.t
 t/opt-caps.t
 t/opt-file.t
