@@ -463,6 +463,20 @@ specified and true.
 Tactus Keyboard article on the mechanics and standards of
 keyboard design - L<http://www.tactuskeyboard.com/keymech.htm>
 
+=head1 CONTRIBUTING
+
+The source for Text::TypingEffort is maintained in a Git repository
+located at L<git://git.ndrix.com/Text-TypingEffort>.  To submit patches,
+you can do something like this:
+
+ $ git clone git://git.ndrix.com/Text-TypingEffort
+ $ cd Text-TypingEffort
+ # hack, commit, hack, commit
+ $ git format-patch -s origin
+ $ git send-email --to michael@ndrix.org *.patch
+
+See http://www.kernel.org/pub/software/scm/git/docs/everyday.html
+
 =head1 AUTHOR
 
 Michael Hendricks <michael@ndrix.org>
