@@ -12,6 +12,13 @@ my $build = Module::Build->new
         'scripts/effort.pl',
       ],
       create_makefile_pl => 'traditional',
+      meta_merge => {
+          resources => {
+              repository => 'git://git.ndrix.com/Text-TypingEffort',
+              homepage   => 'http://git.ndrix.com/?p=Text-TypingEffort;a=summary',
+              bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort',
+          },
+      },
     );
 
 $build->create_build_script;
