@@ -465,7 +465,7 @@ keyboard design - L<http://www.tactuskeyboard.com/keymech.htm>
 
 =head1 AUTHOR
 
-Michael Hendricks <michael@palmcluster.org>
+Michael Hendricks <michael@ndrix.org>
 
 Thanks to Ricardo Signes for a patch for the C<layout> and
 C<register_layout> subroutines.
@@ -477,7 +477,7 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Michael Hendricks
+Copyright (C) 2005-2007 by Michael Hendricks
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.4 or,

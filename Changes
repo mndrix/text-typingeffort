@@ -1,5 +1,9 @@
 Revision history for Perl extension Text::TypingEffort.
 
+0.24
+   - updated copyright statement
+   - updated author's email address
+
 0.23 Wed Aug  3 21:56:22 UTC 2005
    [Squashes]
    - Specified the build_requires dependency on File::Temp
