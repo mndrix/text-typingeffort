@@ -3,7 +3,7 @@ use Module::Build;
 
 my $build = Module::Build->new
     ( module_name     => 'Text::TypingEffort',
-      license         => 'perl',
+      license         => 'mit',
       build_requires  => {
           'Test::More'     => 0.31,
           'File::Temp'     => 0.14,   # we need the OO interface

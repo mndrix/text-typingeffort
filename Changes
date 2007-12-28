@@ -1,6 +1,7 @@
 Revision history for Perl extension Text::TypingEffort.
 
 0.24
+   - changed to the MIT license
    - updated copyright statement
    - updated author's email address
 
