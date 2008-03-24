@@ -1,8 +1,7 @@
 # This test makes sure that the code from the SYNOPSIS works as
 # advertised.
 
-use Test::More;
-plan tests => 4;
+use Test::More tests => 4;
 
 use Text::TypingEffort qw/effort/;
 ok(1, 'use Text::TypingEffort');

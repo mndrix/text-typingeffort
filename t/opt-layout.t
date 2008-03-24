@@ -1,9 +1,7 @@
 # Is the 'layout' option handled correctly?
 
-use Test::More;
-plan tests => 15;
-
-BEGIN{ use_ok('Text::TypingEffort', 'effort') }
+use Test::More tests => 15;
+use Text::TypingEffort qw( effort );
 
 my $text = <<"";
 This is a test of the Dvorak layout vs QWERTY

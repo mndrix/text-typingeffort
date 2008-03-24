@@ -1,9 +1,7 @@
 # Is the 'initial' option handled correctly?
 
-use Test::More;
-plan tests => 4;
-
-BEGIN{ use_ok('Text::TypingEffort', 'effort') }
+use Test::More tests => 4;
+use Text::TypingEffort qw( effort );
 
 my $text_1 = "   \tThe quick brown fox jumps over the lazy dog\n";
 $text_1   .= "\t  The quick brown fox jumps over the lazy dog\n";

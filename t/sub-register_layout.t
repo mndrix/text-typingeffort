@@ -1,9 +1,7 @@
 # Does register_layout() perform correctly?
 
-use Test::More;
-plan tests => 4;
-
-BEGIN{ use_ok('Text::TypingEffort', 'register_layout', 'layout', 'effort') }
+use Test::More tests => 4;
+use Text::TypingEffort qw( effort layout register_layout );
 
 my $layout = [ ('a', 'A')x47 ];
 register_layout('testing', $layout);

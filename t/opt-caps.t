@@ -1,9 +1,7 @@
 # Is the 'caps' option handled correctly?
 
-use Test::More;
-plan tests => 8;
-
-BEGIN{ use_ok('Text::TypingEffort', 'effort') }
+use Test::More tests => 8;
+use Text::TypingEffort qw( effort );
 
 my $text = "   \tTHE QUICK BROWN FOX JUMPS OVER THE LAZY DOG\n";
 $text   .= "\t  THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG\n";

@@ -1,9 +1,7 @@
 # Does layout() perform correctly?
 
-use Test::More;
-plan tests => 3;
-
-BEGIN{ use_ok('Text::TypingEffort', 'layout') }
+use Test::More tests => 3;
+use Text::TypingEffort qw( effort layout );
 
 my $qwerty = $Text::TypingEffort::layouts{qwerty};
 

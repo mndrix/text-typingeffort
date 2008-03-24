@@ -1,8 +1,7 @@
 # Is the 'file' option handled correctly?
 
 use Test::More;
-
-BEGIN{ use_ok('Text::TypingEffort', 'effort') }
+use Text::TypingEffort qw( effort );
 
 # make sure the user has File::Temp and try to make the temporary file
 my $tmp;

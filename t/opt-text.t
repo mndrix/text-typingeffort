@@ -1,9 +1,7 @@
 # Is the 'text' option handled correctly?
 
-use Test::More;
-plan tests => 3;
-
-BEGIN{ use_ok('Text::TypingEffort', 'effort') }
+use Test::More tests => 3;
+use Text::TypingEffort qw( effort );
 
 my $text = "   \tThe quick brown fox jumps over the lazy dog\n";
 $text   .= "\t  The quick brown fox jumps over the lazy dog\n";
