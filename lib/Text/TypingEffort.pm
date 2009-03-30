@@ -13,7 +13,7 @@ our @EXPORT_OK = qw(
     layout
     register_layout
 );
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 our %basis;   # stores the basis for our calculations
 our %layouts; # stores the keyboard layouts
@@ -492,7 +492,7 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-TypingEffort>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005-2007 by Michael Hendricks
+Copyright (C) 2005-2009 by Michael Hendricks
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

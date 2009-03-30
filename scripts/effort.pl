@@ -97,7 +97,7 @@ Michael Hendricks <michael@palmcluster.org>
 
 =head1 COPYRIGHT
 
-Copyright 2005 Michael Hendricks. All rights reserved.
+Copyright 2005-2009 Michael Hendricks. All rights reserved.
 
 This library is free software. You can redistribute it and/or modify it under
 the same terms as Perl itself.
