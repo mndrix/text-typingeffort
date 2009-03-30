@@ -1,6 +1,6 @@
 # Is the 'layout' option handled correctly?
 
-use Test::More tests => 15;
+use Test::More tests => 18;
 use Text::TypingEffort qw( effort );
 
 my $text = <<"";
@@ -25,6 +25,10 @@ results_ok( $effort, 'aset', 'layout=aset' );
 # xpert layout
 $effort = effort( text=>$text, layout=>'xpert' );
 results_ok( $effort, 'xpert', 'layout=xpert' );
+
+# colemak layout
+$effort = effort( text=>$text, layout=>'colemak' );
+results_ok( $effort, 'colemak', 'layout=colemak' );
 
 # unknown layout
 $effort = effort( text=>$text, layout=>'this is not a layout name' );
@@ -59,6 +63,13 @@ sub results_ok {
                 characters => 269,
                 presses    => 281,
                 distance   => 5180,
+        };
+    } elsif( $layout eq 'colemak' ) {
+        $joules = '8.9500';
+        $others = {
+                characters => 269,
+                presses    => 282,
+                distance   => 3790,
         };
     } else {
         $joules = '14.2732';

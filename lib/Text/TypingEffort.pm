@@ -68,6 +68,7 @@ given below.
               | 'dvorak'
               | 'aset',
               | 'xpert',
+              | 'colemak',
     unknowns => 0 | 1,                    # tally unknown chars?
     initial  => \%metrics,                # set initial values
     caps     => 0 | 2 | 3 | ...           # Caps Lock technique
@@ -133,10 +134,10 @@ C<$_> is used as the text to analyze.
 
 Default: qwerty
 
-Specifies the keyboard layout to use when calculating metrics.
-Acceptable, case-insensitive values for B<layout> are: qwerty, dvorak,
-aset, xpert.  If some other value is provided, the default value of
-'qwerty' is used.
+Specifies the keyboard layout to use when calculating metrics.  Acceptable,
+case-insensitive values for B<layout> are: qwerty, dvorak, aset, xpert,
+colemak.  If some other value is provided, the default value of 'qwerty' is
+used.
 
 =head3 unknowns
 
@@ -928,6 +929,71 @@ sub us_104 {
             , <
             . >
             ? /
+        }
+    ]);
+
+    register_layout('colemak', [
+        # define the 12345 row
+        qw{
+            ` ~
+            1 !
+            2 @
+            3 #
+            4 $
+            5 %
+            6 ^
+            7 &
+            8 *
+            9 (
+            0 )
+            - _
+            = +
+            \ |
+        },
+
+        # define the QWFPG row
+        qw/
+            q  Q
+            w  W
+            f  F
+            p  P
+            g  G
+            j  J
+            l  L
+            u  U
+            y  Y
+            ;  :
+            [  {
+            ]  }
+        /,
+
+        # define the home row
+        qw{
+            a A
+            r R
+            s S
+            t T
+            d D
+            h H
+            n N
+            e E
+            i I
+            o O
+            ' "
+        },
+
+        # define the ZXCVB row
+        qw{
+            z Z
+            x X
+            c C
+            v V
+            b B
+            k K
+            m M
+            , <
+            . >
+            / ?
         }
     ]);
 }
